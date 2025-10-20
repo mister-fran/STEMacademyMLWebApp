@@ -8,17 +8,12 @@ APP_CONFIG = {
     "version": "1.0.0"
 }
 
-import os
-# Get the directory containing the script
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Build path to your file
-file_path = os.path.join(BASE_DIR, "data", "HousingPrices_selected.csv")
 
 
 
 # Data paths
 DATA_PATHS = {
-    "huspriser": filepath,
+    "huspriser": data\HousingPrices_selected.csv,
     "diabetes": "data\diabetes_data_rounded.csv",
     "gletsjer": "data\gletsjer_data_rounded.csv"
 }
@@ -35,5 +30,6 @@ UI_CONFIG = {
     "sidebar_width": 300
 
 }
+
 
 
