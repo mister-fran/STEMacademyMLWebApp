@@ -13,7 +13,7 @@ APP_CONFIG = {
 
 # Data paths
 DATA_PATHS = {
-    "huspriser": data\HousingPrices_selected.csv,
+    "huspriser": "data\HousingPrices_selected.csv",
     "diabetes": "data\diabetes_data_rounded.csv",
     "gletsjer": "data\gletsjer_data_rounded.csv"
 }
@@ -30,6 +30,7 @@ UI_CONFIG = {
     "sidebar_width": 300
 
 }
+
 
 
 
