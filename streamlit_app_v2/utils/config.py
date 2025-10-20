@@ -10,7 +10,7 @@ APP_CONFIG = {
 
 # Data paths
 DATA_PATHS = {
-    "huspriser": "data\HousingPrices_selected.csv",
+    "huspriser": "data/HousingPrices_selected.csv",
     "diabetes": "data\diabetes_data_rounded.csv",
     "gletsjer": "data\gletsjer_data_rounded.csv"
 }
@@ -25,4 +25,5 @@ MODEL_CONFIG = {
 UI_CONFIG = {
     "dataframe_height": 200,
     "sidebar_width": 300
+
 }
