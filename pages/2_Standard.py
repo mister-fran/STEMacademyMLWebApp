@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 #Load data from dataloader
 from utils.data_loader import load_huspriser_dataset, load_diabetes_dataset, load_gletsjer_dataset
-
+import os
+from utils.config import DATA_PATHS
 st.set_page_config(page_title="Standard Niveau", page_icon="🎯")
 
 
@@ -39,16 +40,21 @@ def main():
     st.sidebar.write("") # Add vertical space above button
 
     # Download button for PDF
-    
-    with open(pdf_path, "rb") as pdf_file:
-        pdf_bytes = pdf_file.read()
-        
-    st.sidebar.download_button(
-        label="Hent vejledning",
-        data=pdf_bytes,
-        file_name="vejledning.pdf",
-        mime="application/pdf"
-    )
+    if os.path.exists(DATA_PATHS['Vejledning']):
+        try:
+            with open(DATA_PATHS['Vejledning'], "rb") as pdf_file:
+                pdf_bytes = pdf_file.read()
+            
+            st.sidebar.download_button(
+                label="📥 Hent vejledning",
+                data=pdf_bytes,
+                file_name="vejledning.pdf",
+                mime="application/pdf"
+            )
+        except Exception as e:
+            st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
+    else:
+        st.sidebar.warning("⚠️ Vejledning PDF ikke fundet.")
 
     # Content based on dataset - Standard level
     if dataset == "Huspriser":
