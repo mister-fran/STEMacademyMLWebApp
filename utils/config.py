@@ -1,6 +1,7 @@
 """
 Configuration settings for the Streamlit ML Academy app
 """
+import os
 
 APP_CONFIG = {
     "title": "Machine Learning - STEM Academy",
@@ -8,11 +9,18 @@ APP_CONFIG = {
     "version": "1.0.0"
 }
 
-# Data paths
+
+# # Data paths
+# DATA_PATHS = {
+#     "huspriser": "data\HousingPrices_selected.csv",
+#     "diabetes": "data\diabetes_data_rounded.csv",
+#     "gletsjer": "data\gletsjer_data_rounded.csv"
+# }
+
 DATA_PATHS = {
-    "huspriser": "data\HousingPrices_selected.csv",
-    "diabetes": "data\diabetes_data_rounded.csv",
-    "gletsjer": "data\gletsjer_data_rounded.csv"
+    "huspriser": os.path.join("data", "HousingPrices_selected.csv"),
+    "diabetes": os.path.join("data", "diabetes_data_rounded.csv"),
+    "gletsjer": os.path.join("data", "gletsjer_data_rounded.csv")
 }
 
 # ML Model settings
