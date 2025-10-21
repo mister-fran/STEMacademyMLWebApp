@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+
+from utils.config import DATA_PATHS
 #Hi
 
 def main():
@@ -19,23 +21,25 @@ def main():
     st.markdown(' - Huspriser: Regression og Classification  \n - Diabetes: Classification  \n - Gletsjer: Regression')
     st.write('Under "Avanceret" kan du kan også uploade dit eget datasæt og prøve at analysere det med de gennemgåede modeller. Husk du kan hente vejledningen ved at trykke på knappen i sidepanelet i venstre side. God arbejdslyst!')
     # Add a download link for guidance PDF in the sidebar
-    pdf_path = 'data/vejledning.pdf'  # Put your PDF file here
     
     st.sidebar.write("") # Add vertical space above button
 
     # Download button for PDF
-    try:
-        with open(pdf_path, "rb") as pdf_file:
-            pdf_bytes = pdf_file.read()
-        
-        st.sidebar.download_button(
-            label="Hent vejledning",
-            data=pdf_bytes,
-            file_name="vejledning.pdf",
-            mime="application/pdf"
-        )
-    except FileNotFoundError:
-        st.sidebar.warning("Vejledning PDF ikke fundet.")
+    if os.path.exists(DATA_PATHS['Vejledning']):
+        try:
+            with open(DATA_PATHS['Vejledning'], "rb") as pdf_file:
+                pdf_bytes = pdf_file.read()
+            
+            st.sidebar.download_button(
+                label="📥 Hent vejledning",
+                data=pdf_bytes,
+                file_name="vejledning.pdf",
+                mime="application/pdf"
+            )
+        except Exception as e:
+            st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
+    else:
+        st.sidebar.warning("⚠️ Vejledning PDF ikke fundet.")
 
     st.markdown("---")
     #st.write("**Navigation:** Brug sidepanelet til venstre for at navigere mellem de forskellige sider.")
