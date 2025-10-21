@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 
 from utils.config import DATA_PATHS
+import os
 #Hi
 
 def main():
