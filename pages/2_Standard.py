@@ -17,7 +17,6 @@ import matplotlib.pyplot as plt
 import sklearn as sklearn
 
 # Graphviz - Pakke der kan visualisere decision trees
-from IPython.display import SVG, display
 from graphviz import Source
 
 # LightGBM - pakke til at køre decision tree
@@ -164,7 +163,6 @@ def main():
         dot = sklearn.tree.export_graphviz(estimator, out_file=None, feature_names=input_variabler, filled=True, max_depth=50, precision=2)         
         dot = dot.replace("squared_error", "error").replace("mse", "error")
         graph = Source(dot)
-        display(SVG(graph.pipe(format='svg')))
         st.graphviz_chart(dot)
         st.write("Max dybde af træet:", estimator.get_depth())
         a = np.unique(estimator.predict(input_data)).size
