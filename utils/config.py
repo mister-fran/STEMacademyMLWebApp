@@ -21,7 +21,10 @@ DATA_PATHS = {
     "huspriser": os.path.join("data", "HousingPrices_selected.csv"),
     "diabetes": os.path.join("data", "diabetes_data_rounded.csv"),
     "gletsjer": os.path.join("data", "gletsjer_data_rounded.csv"),
-    'Vejledning': os.path.join("data", "Vejledning.pdf")
+    'VejledningHUSPRISER': os.path.join("data", "VejledningHUSPRISER.pdf"),
+    'VejledningDIABETES': os.path.join("data", "VejledningDIABETES.pdf"),
+    'VejledningGLETSJER': os.path.join("data", "VejledningGLETSJER.pdf"),
+    'VejledningPARTIKEL': os.path.join("data", "VejledningPARTIKEL.pdf")
 }
 
 # ML Model settings
