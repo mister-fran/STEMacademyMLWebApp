@@ -173,13 +173,23 @@ Kan du/I ud fra træet sige mere generelt hvilke parametre der betyder mest for 
         
         st.subheader("Boosted Decision Tree")
         st.write("Nu hvor vi har set hvordan træet virker, vil vi gerne prøve at forudsige værdien på huse som vi ikke kender salgsprisen på. Som vi har set, kan det være svært at minimere vores 'loss function'. En måde at forbedre på er ved at køre boosted decision trees, hvilket vil sige at vi kører flere træer, hvor den hver gang lærer af fejlene fra det forrige træ, og på den måde bliver 'boostet' for hvert træ den laver. Herunder kan vi ændre hvor mange gange den må 'booste', altså hvor mange træer den må lave og lærer af.")
-
+        
         boosting_rounds = st.slider("Antal boosting rounds", min_value=1, max_value=100, value=10, step=1)
+        st.write("Vi kan også vælge hvor stor en andel af data vi vil bruge. ")
+        andel_af_data = st.slider("Andel af data til træning", min_value=0.001, max_value=1.0, value=1.0, step=0.001)
+        
+        #Vi omdefinerer vores input og truth data til kun at indeholde en del af dataene.
+        input_data_justeret, truth_data_justeret = sklearn.utils.resample(
+            input_data, truth_data, 
+            n_samples=int(andel_af_data * len(input_data)), 
+            random_state=42, 
+            replace=False
+            )
         st.write("""vi bruger train_test_split til at splitte data i et træningssæt og et testsæt.
 træningssættet bruges til at træne modellen, hvor modellen får salgspriserne at vide.
 testsættet bruges til at give den trænede model data uden salgspriser, som den så skal forudsige, men hvor vi stadig kender svaret""")
         data_træning, data_test, sande_pris_træning, sande_pris_test = \
-        sklearn.model_selection.train_test_split(input_data, truth_data, test_size=0.25, random_state=42)
+        sklearn.model_selection.train_test_split(input_data_justeret, truth_data_justeret, test_size=0.25, random_state=42)
     
         # Her bygger vi modellen op med flere træer, træner på data og forudsiger priser
         #Implement button to run below model
@@ -198,7 +208,8 @@ testsættet bruges til at give den trænede model data uden salgspriser, som den
             st.subheader("Spørgsmål")
             st.markdown("""
                         - Prøv at ændre på hvor mange gange gange den må booste, ved at ændre boosting_rounds fra 1 til 10, 100 eller 1000. Kan du se en forbedring?
-                        - Hvor har modellen sværest ved at forudsige prisen? Er det ved de billigste huse, de dyreste, eller dem i mellem? Hvad kan det være? Hvilke huse tror du der er mest data på?""")
+                        - Hvor har modellen sværest ved at forudsige prisen? Er det ved de billigste huse, de dyreste, eller dem i mellem? Hvad kan det være? Hvilke huse tror du der er mest data på?
+                        - Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?""")
             st.subheader("Hvilke varaibler er vigtigst?")
             st.write("Vi kan tjekke om vores intuition for hvilke variabler der er vigtigst med 'permutation importance'. Det er et mål for hvis værdierne i en kolonne bliver byttet rundt randomly, hvor meget påvirker det så resultatet. Hvis det er en vigtig variable, vil det påvirke resultatet meget. Her bliver det mål på hvor meget større mean squared error bliver, når den variabel bliver 'scramblet'.")
 
@@ -259,7 +270,8 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.""")
             st.subheader("Spørgsmål:")
             st.markdown("""- Prøv at justere på antal neuroner i det neurale netværk - Kan du mindske usikkerheden?
 - Får du det samme antal parameter når du regner efter?
-- Hvilken algoritme klarer sig bedst? Boosted decision tree eller neutralt netværk?""")
+- Hvilken algoritme klarer sig bedst? Boosted decision tree eller neutralt netværk?
+- Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?""")
 
 
 
