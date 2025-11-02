@@ -111,3 +111,43 @@ def Plotting_class(label_test, Forudsigelse, y_pred_label):
 
     plt.tight_layout()  
     plt.show()
+
+#Funktion der visualiserer resultaterne
+def plotting_partikel(label_test, Forudsigelse):
+
+    #ROC
+    #Udregn raten af sande/falske fordusigelser
+    fpr, tpr, _ = sklearn.metrics.roc_curve(label_test, Forudsigelse)    
+    #AUC score
+    auc_score = sklearn.metrics.auc(fpr,tpr)  
+
+    fig, axs = plt.subplots(nrows=1,ncols=2,figsize=(10, 6))
+
+    #Plotting
+    axs[0].set_title('ROC-curve', size = 10)
+    axs[0].plot(fpr, tpr, label=f'(AUC = {auc_score:5.3f})')
+    axs[0].legend(fontsize=10, loc ='lower right')
+    axs[0].set_xlabel('False Positive Rate', size=10)
+    axs[0].set_ylabel('True Positive Rate', size=10)
+    axs[0].grid(True, alpha=0.3)
+
+    #Histogram
+    sandsynlighed_falsk = Forudsigelse[label_test == 0]
+    sandsynlighed_korrekt = Forudsigelse[label_test == 1]
+
+    #Plotting
+    axs[1].hist(sandsynlighed_falsk, bins=30, alpha=0.6, color='lightblue', 
+                   label=f'Ikke elektron (n={len(sandsynlighed_falsk)})', edgecolor='black')
+    axs[1].hist(sandsynlighed_korrekt, bins=30, alpha=0.6, color='lightcoral', 
+    label=f'Elektron (n={len(sandsynlighed_korrekt)})', edgecolor='black')
+    axs[1].set_xlabel('Forudsagt sandsynlighed for at det er en elektron')
+    axs[1].set_ylabel('Antal')
+    axs[1].set_title('Fordeling af forudsagte sandsynligheder farvekodet efter sande værdier',size=10)
+    axs[1].legend(loc='upper center')
+    axs[1].yaxis.tick_right()
+    axs[1].yaxis.set_label_position("right")
+    axs[1].grid(True, alpha=0.3)
+    axs[1].axvline(x=0.5, color='red', linestyle='--', linewidth=2, label='Beslutningsgrænse (0.5)')
+
+    plt.tight_layout()  
+    plt.show()

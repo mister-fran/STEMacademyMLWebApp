@@ -6,6 +6,7 @@ import os
 from utils.config import DATA_PATHS
 from utils.plots import plotting
 from utils.plots import Plotting_class
+from utils.plots import plotting_partikel
 
 #Importer pakker
 # Data
@@ -683,7 +684,7 @@ Testsættet bruges til at give den trænede model ny data (som den ikke kender s
             # Her får vi sandsynlighederne for om hver person har diabetes eller ej
             Forudsigelse = gbm_test.predict_proba(data_test, num_iteration=gbm_test.best_iteration_)[:,1]
             
-            plotting(label_test, Forudsigelse)
+            plotting_partikel(label_test, Forudsigelse)
 
 
             st.subheader("Evaluer resultat med AUC og histogram")
@@ -752,7 +753,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             # Coef er vægtene er intercept er bias. Den henter antallet direkte fra modellen.
             n_params = sum(coef.size + intercept.size for coef, intercept in zip(mlp.coefs_, mlp.intercepts_))
             st.write(f"Antal parametre i NN: {n_params}")
-            plotting(label_test, Forudsigelse)
+            plotting_partikel(label_test, Forudsigelse)
             st.subheader("Spørgsmål:")
             st.markdown("""
 - Sammenlign modellen med boosted decision tree ovenover. Hvilken algoritme klarer sig bedst?
