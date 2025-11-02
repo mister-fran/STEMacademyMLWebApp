@@ -51,7 +51,6 @@ def plotting(sande, forudsagte):
     fig.tight_layout()
     st.pyplot(fig)
 
-#Funktion der visualiserer resultaterne til classification
 def Plotting_class(label_test, Forudsigelse, y_pred_label):
 
     #ROC
