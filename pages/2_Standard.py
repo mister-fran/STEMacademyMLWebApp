@@ -36,18 +36,8 @@ def main():
     dataset = st.sidebar.radio("Vælg et datasæt:", ["Huspriser", "Diabetes", "Gletsjer"])
 
     # Add description
-    st.write('"Standard" indeholder kun de mest centrale koncepter indenfor ML og ligger sig tæt op af vejledningen. Dette er et godt sted at starte hvis du ikke har arbejdet med ML før.')
-    st.write("Vælg et datasæt for at begynde.")
-
-    # Display the selected dataset with scrolling enabled and limited to 5 rows tall
-    st.subheader(f"Visualisering af {dataset}")
-    if dataset == "Huspriser":
-        st.dataframe(DS1, height=200, use_container_width=True)
-    elif dataset == "Diabetes":
-        st.dataframe(DS2, height=200, use_container_width=True)
-    elif dataset == "Gletsjer":
-        st.dataframe(DS3, height=200, use_container_width=True)
-    
+    st.write('Alternativ til at køre .ipynb filen lokalt på din computer. Indeholder samme funktionaliteter som .ipynb filerne med uden at man skal skrive/se kode selv.')
+    st.write("Vælg et datasæt for at begynde.")    
 
     # Add a download link for guidance PDF in the sidebar
     pdf_path = 'data/vejledning.pdf'  # Put your PDF file here
@@ -185,9 +175,9 @@ Kan du/I ud fra træet sige mere generelt hvilke parametre der betyder mest for 
             random_state=42, 
             replace=False
             )
-        st.write("""vi bruger train_test_split til at splitte data i et træningssæt og et testsæt.
-træningssættet bruges til at træne modellen, hvor modellen får salgspriserne at vide.
-testsættet bruges til at give den trænede model data uden salgspriser, som den så skal forudsige, men hvor vi stadig kender svaret""")
+        st.write("""Vi splitter datasættet i et træningssæt og et testsæt.
+Træningssættet bruges til at træne modellen, hvor modellen får salgspriserne at vide.
+Testsættet bruges til at give den trænede model data uden salgspriser, som den så skal forudsige, men hvor vi stadig kender svaret.""")
         data_træning, data_test, sande_pris_træning, sande_pris_test = \
         sklearn.model_selection.train_test_split(input_data_justeret, truth_data_justeret, test_size=0.25, random_state=42)
     
@@ -204,13 +194,13 @@ testsættet bruges til at give den trænede model data uden salgspriser, som den
 
             res = sklearn.inspection.permutation_importance(gbm_test, data_test, sande_pris_test, scoring="neg_mean_squared_error")
         
-            st.write("Nu vil vi gerne inspicere hvor god vores model er til at forusige på data hvor den ikke kender prisen. Det venstre plot viser residualerne, altså sande værdi - forudsagte værdi. Det højre plot er sande værdi vs forudsagte værdi. Her er også konturer (de sorte linjer), der viser tætheden af punkterne.")
+            st.write("Nu vil vi gerne inspicere hvor god vores model er til at forudsige på data hvor den ikke kender prisen. Det venstre plot viser residualerne, altså sande værdi - forudsagte værdi. Det højre plot er sande værdi vs forudsagte værdi. Her er også konturer (de sorte linjer), der viser tætheden af punkterne.")
             st.subheader("Spørgsmål")
             st.markdown("""
                         - Prøv at ændre på hvor mange gange gange den må booste, ved at ændre boosting_rounds fra 1 til 10, 100 eller 1000. Kan du se en forbedring?
                         - Hvor har modellen sværest ved at forudsige prisen? Er det ved de billigste huse, de dyreste, eller dem i mellem? Hvad kan det være? Hvilke huse tror du der er mest data på?
                         - Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?""")
-            st.subheader("Hvilke varaibler er vigtigst?")
+            st.subheader("Hvilke variabler er vigtigst?")
             st.write("Vi kan tjekke om vores intuition for hvilke variabler der er vigtigst med 'permutation importance'. Det er et mål for hvis værdierne i en kolonne bliver byttet rundt randomly, hvor meget påvirker det så resultatet. Hvis det er en vigtig variable, vil det påvirke resultatet meget. Her bliver det mål på hvor meget større mean squared error bliver, når den variabel bliver 'scramblet'.")
 
 
@@ -253,8 +243,8 @@ testsættet bruges til at give den trænede model data uden salgspriser, som den
         layer_six = st.slider("Antal noder i lag 6", min_value=1, max_value=32, value=2, step=1)
 
 
-        st.write("""Nedenfor træner vi modellen. Vi kan også regne ud hvor mange parameter modellen bruger.
-Herefter plotter vi for at se hvor godt modellen klarer sig.""")
+        st.write("""Nedenfor træner vi modellen. Vi kan også regne ud hvor mange parametre modellen bruger.
+Herefter plotter vi for at se hvor godt modellen klarer sig. Denne kan tage op til ~et minut at køre.""")
         if st.button("Kør Neuralt Netværk"):
             # Her definerer og træner vi modellen
             mlp = sklearn.neural_network.MLPRegressor(hidden_layer_sizes=(layer_one, layer_two, layer_three, layer_four, layer_five, layer_six), 
@@ -439,7 +429,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.""")
             random_state=42, 
             replace=False
             )
-        st.write("""Vi bruger train_test_split til at splitte data i et træningssæt og et testsæt.
+        st.write("""Vi splitter data i et træningssæt og et testsæt.
 Træningssættet bruges til at træne modellen, hvor modellen får de rigtige dybder at vide at vide.
 Testsættet bruges til at give den trænede model data uden dybder, som den så skal forudsige, men hvor vi stadig kender svaret. Dette bruges til at evaluere modellens performance.""")
         data_træning, data_test, sand_dybde_træning, sand_dybde_test = \
@@ -466,7 +456,7 @@ Testsættet bruges til at give den trænede model data uden dybder, som den så 
 - Hvad gætter modellen på hvis ikke den før lov til at booste mange gange? Er der bestemte områder hvor modellen har sværere ved at forudsige dybden?
 - Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?""")
             st.subheader("Hvilke variable er vigtigst?")
-            st.write("Vi kan tjekke om vores intuition for hvilke variabler der er vigtigst med 'permutation importance'. Det er et mål for hvis værdierne i en kolonne bliver byttet rundt randomly, hvor meget påvirker det så resultatet. Hvis det er en vigtig variable, vil det påvirke resultatet meget. Her bliver det mål på hvor meget større mean squared error bliver, når den variabel bliver 'scramblet'.")
+            st.write("Vi kan tjekke om vores intuition for hvilke variable der er vigtigst med 'permutation importance'. Det er et mål for hvis værdierne i en kolonne bliver byttet rundt randomly, hvor meget påvirker det så resultatet. Hvis det er en vigtig variable, vil det påvirke resultatet meget. Her bliver det mål på hvor meget større mean squared error bliver, når den variabel bliver 'scramblet'.")
 
 
             imp_mse = res.importances_mean                
@@ -486,8 +476,10 @@ Testsættet bruges til at give den trænede model data uden dybder, som den så 
             fig.tight_layout()
             st.pyplot(fig)
 
-            st.markdown("""- Er resultatet som du forventede? 
-                        - Kan du give en mulig grund til hvorfor netop disse variable har størst betydning?""")
+            st.markdown("""
+- Er resultatet som du forventede? 
+- Kan du give en mulig grund til hvorfor netop disse variable har størst betydning?
+                        """)
 
         #NN 
         st.subheader("Neurale Netværk")
@@ -509,8 +501,9 @@ Testsættet bruges til at give den trænede model data uden dybder, som den så 
         layer_six = st.slider("Antal noder i lag 6", min_value=1, max_value=32, value=2, step=1)
 
 
-        st.write("""Nedenfor træner vi modellen. Vi kan også regne ud hvor mange parameter modellen bruger.
-Herefter plotter vi for at se hvor godt modellen klarer sig.""")
+        st.write("""Nedenfor træner vi modellen. Vi kan også regne ud hvor mange parametre modellen bruger.
+Herefter plotter vi for at se hvor godt modellen klarer sig.
+                 Det kan godt tage op til ~et minut at køre denne model.""")
         if st.button("Kør Neuralt Netværk"):
             # Her definerer og træner vi modellen
             mlp = sklearn.neural_network.MLPRegressor(hidden_layer_sizes=(layer_one, layer_two, layer_three, layer_four, layer_five, layer_six), 
@@ -527,8 +520,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.""")
             st.subheader("Spørgsmål:")
             st.markdown("""
 - Prøv at justere på antal neuroner i det neurale netværk - Bliver modellen bedre dårligere/kører den hurtigere langsommere?
-- Hvad sker der hvis du justerer max_iter?
-- Får du det samme antal parameter når du regner efter?
+- Får du det samme antal parametre når du regner efter?
 - Hvilken algoritme klarer sig bedst? Boosted decision tree eller neutralt netværk?
 - Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?
                         """)
