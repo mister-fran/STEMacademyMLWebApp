@@ -20,4 +20,8 @@ def load_gletsjer_dataset():
     """Load gletsjer dataset"""
     return pd.read_csv(DATA_PATHS['gletsjer'])
 
+@st.cache_data
+def load_partikel_dataset():
+    """Load partikel dataset"""
+    return pd.read_csv(DATA_PATHS['partikel'])
 

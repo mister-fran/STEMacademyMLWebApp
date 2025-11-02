@@ -21,6 +21,7 @@ DATA_PATHS = {
     "huspriser": os.path.join("data", "HousingPrices_selected.csv"),
     "diabetes": os.path.join("data", "diabetes_data_rounded.csv"),
     "gletsjer": os.path.join("data", "gletsjer_data_rounded.csv"),
+    'partikel': os.path.join("data", "partikel_data_50000_rounded.csv"),
     'VejledningHUSPRISER': os.path.join("data", "VejledningHUSPRISER.pdf"),
     'VejledningDIABETES': os.path.join("data", "VejledningDIABETES.pdf"),
     'VejledningGLETSJER': os.path.join("data", "VejledningGLETSJER.pdf"),
