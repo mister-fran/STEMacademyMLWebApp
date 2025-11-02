@@ -36,7 +36,7 @@ def main():
 
     # Dataset selection
     st.sidebar.header("Datasæt")
-    dataset = st.sidebar.radio("Vælg et datasæt:", ["Huspriser", "Diabetes", "Gletsjer"])
+    dataset = st.sidebar.radio("Vælg et datasæt:", ["Huspriser", "Diabetes", "Gletsjer", "Partikel"])
 
     # Add description
     st.write('Alternativ til at køre .ipynb filen lokalt på din computer. Indeholder samme funktionaliteter som .ipynb filerne med uden at man skal skrive/se kode selv.')
