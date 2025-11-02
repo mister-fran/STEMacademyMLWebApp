@@ -51,7 +51,7 @@ def plotting(sande, forudsagte):
     fig.tight_layout()
     st.pyplot(fig)
 
-def Plotting_class(label_test, Forudsigelse, y_pred_label):
+def Plotting_class(label_test, Forudsigelse, y_pred_label, beslutningsgrænse):
 
     #ROC
     #Udregn raten af sande/falske forudsigelser
@@ -109,8 +109,8 @@ def Plotting_class(label_test, Forudsigelse, y_pred_label):
     axs[1].axvline(x=beslutningsgrænse, color='red', linestyle='--', linewidth=2, label=f'Beslutningsgrænse = {beslutningsgrænse}')
     axs[1].legend(loc='upper center')
 
-    plt.tight_layout()  
-    plt.show()
+    fig.tight_layout()  
+    st.pyplot(fig)
 
 #Funktion der visualiserer resultaterne
 def plotting_partikel(label_test, Forudsigelse):
@@ -149,5 +149,5 @@ def plotting_partikel(label_test, Forudsigelse):
     axs[1].grid(True, alpha=0.3)
     axs[1].axvline(x=0.5, color='red', linestyle='--', linewidth=2, label='Beslutningsgrænse (0.5)')
 
-    plt.tight_layout()  
-    plt.show()
+    fig.tight_layout()  
+    st.pyplot(fig)

@@ -338,9 +338,9 @@ Tallene i value er [raske, diabetikere].
         st.write("""Vi splitter data i et træningssæt og et testsæt.
 Træningssættet bruges til at træne modellen, hvor modellen får at vide hvilke personer der har diabetes.
 Testsættet bruges til at give den trænede model data uden at vide hvilke personer der har diabetes, og bagefter kan vi tjekke om dens forudsigelser var korrekte.""")
-        data_træning, data_test, sand_dybde_træning, sand_dybde_test = \
+        data_træning, data_test, sande_gruppe_træning, sande_gruppe_test = \
     sklearn.model_selection.train_test_split(input_data_justeret, truth_data_justeret, test_size=0.25, random_state=42)
-    
+
         # Her bygger vi modellen op med flere træer, træner på data og forudsiger priser
         #Implement button to run below model
         st.write("Her definerer vi beslutningsgrænsen. Som standard bruges 0.5.")
@@ -357,12 +357,10 @@ Testsættet bruges til at give den trænede model data uden at vide hvilke perso
 
             # her får vi en liste med 0'er og 1'ere. Hvis en person har en sandsynlighed over beslutningsgrænsen, bliver den sat til 1,
             # altså forudsagt som diabetiker
-            forudsagte_gruppe = gbm_test.predict_proba(data_test, num_iteration=gbm_test.best_iteration_)
+            forudsagte_gruppe = gbm_test.predict_proba(data_test, num_iteration=gbm_test.best_iteration_)[:,1]
             forudsagte_gruppe = (forudsagte_gruppe > beslutningsgrænse).astype(int)
-            
-            Plotting_class(sande_gruppe_test, forudsagte_score, forudsagte_gruppe)
 
-            res = sklearn.inspection.permutation_importance(gbm_test, data_test, sande_gruppe_test, scoring="neg_mean_squared_error")
+            Plotting_class(sande_gruppe_test, forudsagte_score, forudsagte_gruppe, beslutningsgrænse)
 
 
             st.subheader("Evaluer resultat med AUC og histogram")
@@ -378,6 +376,7 @@ Testsættet bruges til at give den trænede model data uden at vide hvilke perso
             st.subheader("Hvilke variabler er vigtigst?")
             st.write("Vi kan tjekke om vores intuition for hvilke variabler der er vigtigst med 'permutation importance'. Det er et mål for hvis værdierne i en kolonne bliver byttet tilfældigt rundt, hvor meget påvirker det så resultatet. Hvis det er en vigtig variabel, vil det påvirke resultatet meget. Her bliver det målt på hvor meget større mean squared error (fejlen) bliver, når den variabel bliver 'scramblet'.")
             
+            res = sklearn.inspection.permutation_importance(gbm_test, data_test, sande_gruppe_test, scoring="neg_mean_squared_error")
 
             imp_mse = res.importances_mean                
             order = np.argsort(imp_mse)[::-1]
@@ -402,18 +401,18 @@ Testsættet bruges til at give den trænede model data uden at vide hvilke perso
         st.write("Neurale Netværk (NN) kommer fra at opbygningen af det, minder om den måde vores neuroner i hjernen snakker sammen på. På samme måde som et decision tree er der forskellige lag og vi kan styre hvor mange lag der er, men nu er det ikke kun sandt eller falsk, i stedet fungerer noderne som knapper der kan fintunes. ")
         st.write("Neurale netværk er mere følsomme overfor det data vi giver dem. Den fungerer bedst hvis resultatet er værdier mellem 0 og 1. Derfor bruger vi en funktion til at skalere eller normalisere vores data, kaldet StandardScaler.")
         scaler = sklearn.preprocessing.StandardScaler()
-        data_træning = scaler.fit_transform(data_træning)
-        data_test = scaler.transform(data_test)
-            
+        data_træning_transformed = scaler.fit_transform(data_træning)
+        data_test_transformed = scaler.transform(data_test)
+
         st.write("I et neuralt netværk kan vi justere på hvor mange lag og hvor mange noder hvert lag skal have:")
 
         #Make six slider, one for each layer. that is six layers in total. sliders decide amount of nodes per layer
-        layer_one = st.slider("Antal noder i lag 1", min_value=1, max_value=32, value=32, step=1)
-        layer_two = st.slider("Antal noder i lag 2", min_value=1, max_value=32, value=16, step=1)
-        layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=32, value=8, step=1)
-        layer_four = st.slider("Antal noder i lag 4", min_value=1, max_value=32, value=4, step=1)
-        layer_five = st.slider("Antal noder i lag 5", min_value=1, max_value=32, value=2, step=1)
-        layer_six = st.slider("Antal noder i lag 6", min_value=1, max_value=32, value=2, step=1)
+        layer_one = st.slider("Antal noder i lag 1", min_value=1, max_value=64, value=64, step=1)
+        layer_two = st.slider("Antal noder i lag 2", min_value=1, max_value=64, value=32, step=1)
+        layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=64, value=16, step=1)
+        layer_four = st.slider("Antal noder i lag 4", min_value=1, max_value=64, value=8, step=1)
+        layer_five = st.slider("Antal noder i lag 5", min_value=1, max_value=64, value=4, step=1)
+        layer_six = st.slider("Antal noder i lag 6", min_value=1, max_value=64, value=2, step=1)
 
 
         st.write("""Nedenfor træner vi modellen. Vi kan også regne ud hvor mange parametre modellen bruger.
@@ -423,19 +422,18 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             # Her definerer og træner vi modellen
             mlp = sklearn.neural_network.MLPClassifier(hidden_layer_sizes=(layer_one, layer_two, layer_three, layer_four, layer_five, layer_six), 
             max_iter=2000, early_stopping=True, random_state=42)
-            mlp.fit(data_træning, sande_gruppe_træning) 
+            mlp.fit(data_træning_transformed, sande_gruppe_træning) 
 
             # Her giver vi den trænede model test data som den ikke har set før, og beder om at forudsige prisen
-            beslutningsgrænse = 0.5
-            forudsagte_gruppe = mlp.predict_proba(data_test)[:,1]  
+            forudsagte_gruppe = mlp.predict_proba(data_test_transformed)[:,1]  
             forudsagte_gruppe = (forudsagte_gruppe > beslutningsgrænse).astype(int)
-            forudsagte_score = mlp.predict_proba(data_test)[:, 1]
+            forudsagte_score = mlp.predict_proba(data_test_transformed)[:, 1]
 
             # Beregn antal parametre i modellen
             # Coef er vægtene er intercept er bias. Den henter antallet direkte fra modellen.
             n_params = sum(coef.size + intercept.size for coef, intercept in zip(mlp.coefs_, mlp.intercepts_))
             st.write(f"Antal parametre i NN: {n_params}")
-            Plotting_class(sande_gruppe_test, forudsagte_score, forudsagte_gruppe)
+            Plotting_class(sande_gruppe_test, forudsagte_score, forudsagte_gruppe, beslutningsgrænse)
             st.subheader("Spørgsmål:")
             st.markdown("""
 - Prøv at justere på antal neuroner i det neurale netværk - Kan du forbedre AUC og antallet at syge klassificeret som raske?
@@ -714,7 +712,7 @@ Testsættet bruges til at give den trænede model ny data (som den ikke kender s
             ax.set_xlabel("Increase in log_loss (permutation)")
             ax.set_ylabel("Feature")
             ax.set_title("Permutation Importance")
-            ax.invert_yaxis()
+            #ax.invert_yaxis()
             fig.tight_layout()
             st.pyplot(fig)
 
