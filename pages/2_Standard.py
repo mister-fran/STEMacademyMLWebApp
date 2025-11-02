@@ -635,7 +635,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
         estimator.fit(input_data, truth_data)   # Dette er den "magiske" linje - her optimerer Machine Learning algoritmen sine interne vægte til at give bedste svar
 
         # laver visuel graf af træet
-        dot = sklearn.tree.export_graphviz(estimator, out_file=None, feature_names=input_variabler, filled=True, max_depth=50, precision=2)         
+        dot = sklearn.tree.export_graphviz(estimator, out_file=None, feature_names=input_variable, filled=True, max_depth=50, precision=2)         
         dot = dot.replace("squared_error", "error").replace("mse", "error")
         st.graphviz_chart(dot)
         st.write("Max dybde af træet:", estimator.get_depth())
