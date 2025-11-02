@@ -4,9 +4,8 @@ import pandas as pd
 from utils.data_loader import load_huspriser_dataset, load_diabetes_dataset, load_gletsjer_dataset, load_partikel_dataset
 import os
 from utils.config import DATA_PATHS
-from utils.plots import plotting
-from utils.plots import Plotting_class
-from utils.plots import plotting_partikel
+from utils.plots import plotting, plotting_partikel, Plotting_class
+
 
 #Importer pakker
 # Data
@@ -345,7 +344,7 @@ Testsættet bruges til at give den trænede model data uden at vide hvilke perso
         #Implement button to run below model
         st.write("Her definerer vi beslutningsgrænsen. Som standard bruges 0.5.")
         beslutningsgrænse = st.slider("Beslutningsgrænse", min_value=0.0, max_value=1.0, value=0.5, step=0.1)
-        if st.button("Kør model"):
+        if st.button("Kør model"):  
             gbm_test = lgb.LGBMClassifier(objective='binary', n_estimators=boosting_rounds, verbosity=-1) 
 
             # Her træner vi vores model på vores trænings data
