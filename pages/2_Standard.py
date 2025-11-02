@@ -5,6 +5,8 @@ from utils.data_loader import load_huspriser_dataset, load_diabetes_dataset, loa
 import os
 from utils.config import DATA_PATHS
 from utils.plots import plotting
+from utils.plots import Plotting_class
+
 #Importer pakker
 # Data
 import numpy as np
@@ -268,106 +270,179 @@ Herefter plotter vi for at se hvor godt modellen klarer sig. Denne kan tage op t
 
     #DIABETES .ipynb
     elif dataset == "Diabetes":
+        #HER BEGYNDER VORES .ipynb
         st.subheader("Standard Niveau - Diabetes")
-        st.write("Algoritmen forudsiger om en person har diabetes ud fra de resterende variable.")
+        st.write("Som nævnt, har du fået betroet opgaven at skrive en machine learning algoritme der kan forudsiger om en person har diabetes eller ej. På denne hjemmeside behøver vi ikke importere nogen pakker da det er tilrettelagt således at man skal kunne lege med ML-modellerne uden at skulle bekymre sig om koden bag dem.")
 
-        # Automatically set the target column to 'Diabetes'
-        target_column = 'Diabetes'
+        #Inspicer dataen
+        st.subheader("Inspicer dataen")
+        st.write("Først vil vi gerne undersøge hvilken data vi har med at gøre.")
+        st.dataframe(DS2, height=200, use_container_width=True)
+        
+        #Tilrettelæg data
+        variabler = DS2.columns
+        input_variabler = [v for v in variabler if v != 'Diabetes']
+        input_data = DS2[input_variabler].to_numpy()
+        truth_data = DS2['Diabetes'].to_numpy()
 
-        # Button to run the model
-        if st.button("Kør klassifikations model"):
-            # Prepare data
-            X = DS2.drop(columns=[target_column])
-            y = DS2[target_column]
+        st.subheader("Decision Tree")
+        st.write("Et decision tree er bygget op af lag og grene. Ved hver gren stiller den et spørgsmål, og bevæger sig ned i det næste lag baseret på om spørgsmålet er sandt eller falsk. Og ved at lære af en masse data, kan den finde ud af hvilke spørgsmål der er bedst at stille.")
 
-            # Handle missing values
-            X = X.fillna(0)
-            y = y.fillna(0)
+        st.subheader("Parameter")
+        st.write("For et decision tree kan vi justere på hvor mange lag der skal være i vores træ, altså hvor mange lag af spørgsmål der må stilles. Vi kan justere på den parameter herunder.")
 
-            # Import necessary libraries
+        #Make a slider to choose depth
+        DT_N_lag = st.slider("Antal lag i træet", min_value=1, max_value=10, value=2, step=1)
 
-            # Split data
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        st.write("Her bygger og træner vi modellen og bruger Graphviz til at visualisere det.")
 
-            # Train model
-            model = LGBMClassifier(random_state=42)
-            model.fit(X_train, y_train)
+        # Her bliver modellen trænet på data
+        estimator = sklearn.tree.DecisionTreeClassifier(max_depth=DT_N_lag, min_samples_leaf = 20,random_state=42)
+        estimator.fit(input_data, truth_data)   # Dette er den "magiske" linje - her optimerer Machine Learning algoritmen sine interne vægte til at give bedste svar
+        
+        # laver visuel graf af træet
+        dot = sklearn.tree.export_graphviz(estimator, out_file=None, feature_names=input_variabler, filled=True, max_depth=50, precision=2)         
+        dot = dot.replace("squared_error", "error").replace("mse", "error")
+        st.graphviz_chart(dot)
+        st.write("Max dybde af træet:", estimator.get_depth())
 
-            # Predict and evaluate
-            y_pred = model.predict(X_test)
 
-            # Add predictions to the dataset
-            predictions_df = X_test.copy()
-            predictions_df[target_column] = y_test.values
-            predictions_df['Forudsigelse'] = y_pred
+        st.subheader("Spørgsmål")
+        st.markdown("""
+- Inspicer træet. Forstår du/I, hvad de forskellige tal betyder?
+  Hvilken kasse falder de fleste personer ned I? hvor er der mindst? 
+  
+Tallene i value er [raske, diabetikere].
+- Hvilke(n) af kasserne bliver kategoriseret som at have diabetes? 
+- Hvor stor en del af patienter med diabetes vil den forudsige til at have diabetes?
+- Prøv at ændre på hvor mange lag der er i træet fra 2 til 3.
+  Hvilken parameter bliver brugt oftest til at opdele data? Kan du/I ud fra træet sige mere generelt hvilke parametre der betyder mest for om en person har diabetes? Hvilke betyder mindst?
+""")
+        
+        st.subheader("Boosted Decision Tree")
+        st.write("Nu hvor vi har set hvordan træet virker, vil vi gerne prøve at forudsige om patienter vi ikke kender diagnosen på har diabetes eller ej. Som vi har set, kan det være svært at minimere vores 'loss function'. En måde at forbedre på er ved at køre boosted decision trees, hvilket vil sige at vi kører flere træer, hvor den hver gang lærer af fejlene fra det forrige træ, og på den måde bliver 'boostet' for hvert træ den laver. Herunder kan vi ændre hvor mange gange den må 'booste', altså hvor mange træer den må lave og lærer af.")
+        
+        boosting_rounds = st.slider("Antal boosting rounds", min_value=1, max_value=1000, value=1, step=1)
+        st.write("Vi kan også vælge hvor stor en andel af data vi vil bruge. ")
+        andel_af_data = st.slider("Andel af data til træning", min_value=0.001, max_value=1.0, value=1.0, step=0.001)
+        
+        #Vi omdefinerer vores input og truth data til kun at indeholde en del af dataene.
+        input_data_justeret, truth_data_justeret = sklearn.utils.resample(
+            input_data, truth_data, 
+            n_samples=int(andel_af_data * len(input_data)), 
+            random_state=42, 
+            replace=False
+            )
+        st.write("""Vi splitter data i et træningssæt og et testsæt.
+Træningssættet bruges til at træne modellen, hvor modellen får at vide hvilke personer der har diabetes.
+Testsættet bruges til at give den trænede model data uden at vide hvilke personer der har diabetes, og bagefter kan vi tjekke om dens forudsigelser var korrekte.""")
+        data_træning, data_test, sand_dybde_træning, sand_dybde_test = \
+    sklearn.model_selection.train_test_split(input_data_justeret, truth_data_justeret, test_size=0.25, random_state=42)
+    
+        # Her bygger vi modellen op med flere træer, træner på data og forudsiger priser
+        #Implement button to run below model
+        st.write("# Her definerer vi beslutningsgrænsen. Som standard bruges 0.5")
+        beslutningsgrænse = st.slider("Beslutningsgrænse", min_value=0.0, max_value=1.0, value=0.5, step=0.1)
+        if st.button("Kør model"):
+            gbm_test = lgb.LGBMClassifier(objective='binary', n_estimators=boosting_rounds, verbosity=-1) 
 
-            # Display the dataset with predictions in a scrollable window
-            st.write("Datasæt med forudsigelser:")
-            st.dataframe(predictions_df, height=200, use_container_width=True)
+            # Her træner vi vores model på vores trænings data
+            gbm_test.fit(data_træning, sande_gruppe_træning, eval_set=[(data_test, sande_gruppe_test)], 
+                        callbacks=[early_stopping(15)])
 
-            # Show accuracy score
-            score = accuracy_score(y_test, y_pred)
-            st.write(f"Accuracy for klassifikation på {target_column}: {score:.4f}")
+            # Her får vi sandsynlighederne for om hver person har diabetes eller ej
+            forudsagte_score = gbm_test.predict_proba(data_test, num_iteration=gbm_test.best_iteration_)[:, 1]
 
-            # ROC Curve visualization
-            st.subheader("📈 ROC Curve")
+            # her får vi en liste med 0'er og 1'ere. Hvis en person har en sandsynlighed over beslutningsgrænsen, bliver den sat til 1,
+            # altså forudsagt som diabetiker
+            forudsagte_gruppe = gbm_test.predict_proba(data_test, num_iteration=gbm_test.best_iteration_)
+            forudsagte_gruppe = (forudsagte_gruppe > beslutningsgrænse).astype(int)
             
-            # Get prediction probabilities
-            y_pred_proba = model.predict_proba(X_test)[:, 1]
+            Plotting_class(sande_gruppe_test, forudsagte_score, forudsagte_gruppe)
+
+            res = sklearn.inspection.permutation_importance(gbm_test, data_test, sande_gruppe_test, scoring="neg_mean_squared_error")
+
+
+            st.subheader("Evaluer resultat med AUC og histogram")
+            st.write("Nu vil vi gerne inspicere hvor god vores model er til at forudsige om en person har diabetes eller ej. Det venstre plot viser en ROC-kurve dvs. hvor stor en andel af sande gæt har vi per andel af forkerte gæt. Jo tættere denne er på venstre øverste hjørne jo bedre. Selve scoren Area Under Curve (AUC) angiver bare hvor tæt på hjørnet grafen er. 1 angiver en perfekt score.")
+            st.write("Det højre plot viser fordelingen af korrekte og forkerte gæt farvekodet efter hvad data rent faktisk svarede til. Dvs vi kigger på hvad modellen har gættet på ud fra hvad vores data rent faktisk svarede til. Der vil altid være nogen der bliver forudsagt forkert, vores opgave er at minimere antallet.")
+            st.subheader("Spørgsmål")
+            st.markdown("""
+- Prøv at ændre på hvor mange gange gange den må booste, ved at ændre boosting_rounds fra 1 til 10, 100 eller 1000. Kan du se en forbedring?
+- Hvor laver modellen flest fejl? Raske der grupperes som diabetikere, eller omvendt?
+- Som standard deler den ved 0.5 sandsynlighed. Kunne det være en fordel at dele ved en anden sandsynlighed? (Prøv evt. at ændre på beslutningsgrænsen oppe hvor modellen bliver trænet)
+- Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?
+""")
+            st.subheader("Hvilke variabler er vigtigst?")
+            st.write("Vi kan tjekke om vores intuition for hvilke variabler der er vigtigst med 'permutation importance'. Det er et mål for hvis værdierne i en kolonne bliver byttet tilfældigt rundt, hvor meget påvirker det så resultatet. Hvis det er en vigtig variabel, vil det påvirke resultatet meget. Her bliver det målt på hvor meget større mean squared error (fejlen) bliver, når den variabel bliver 'scramblet'.")
             
-            # Calculate ROC curve
-            fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
-            roc_auc = auc(fpr, tpr)
-            
-            # Create ROC plot
+
+            imp_mse = res.importances_mean                
+            order = np.argsort(imp_mse)[::-1]
+            labels = np.asarray(variabler[:-1])[order]
+            vals = imp_mse[order]
+
             fig, ax = plt.subplots(figsize=(8, 6))
-            ax.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
-            ax.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--', label='Random classifier')
-            ax.set_xlim([0.0, 1.0])
-            ax.set_ylim([0.0, 1.05])
-            ax.set_xlabel('False Positive Rate')
-            ax.set_ylabel('True Positive Rate')
-            ax.set_title('ROC Curve for Diabetes Classification')
-            ax.legend(loc="lower right")
-            ax.grid(True)
-            
+            y = np.arange(len(vals))
+            ax.barh(y, vals)
+            ax.set_yticks(y)
+            ax.set_yticklabels(labels)
+            ax.set_xlabel("Increase in MSE (permutation)")
+            ax.set_ylabel("Feature")
+            ax.set_title("Permutation Importance")
+            ax.invert_yaxis()
+            fig.tight_layout()
             st.pyplot(fig)
-            st.write(f"AUC Score: {roc_auc:.4f}")
 
-            # Histogram of predicted probabilities by actual class
-            st.subheader("Fordeling af syge og raske patienter som funktion af modellens forudsigelse")
+            st.markdown("- Er resultatet som du forventede?")
+        #NN 
+        st.subheader("Neurale Netværk")
+        st.write("Neurale Netværk (NN) kommer fra at opbygningen af det, minder om den måde vores neuroner i hjernen snakker sammen på. På samme måde som et decision tree er der forskellige lag og vi kan styre hvor mange lag der er, men nu er det ikke kun sandt eller falsk, i stedet fungerer noderne som knapper der kan fintunes. ")
+        st.write("Neurale netværk er mere følsomme overfor det data vi giver dem. Den fungerer bedst hvis resultatet er værdier mellem 0 og 1. Derfor bruger vi en funktion til at skalere eller normalisere vores data, kaldet StandardScaler.")
+        scaler = sklearn.preprocessing.StandardScaler()
+        data_træning = scaler.fit_transform(data_træning)
+        data_test = scaler.transform(data_test)
             
-            # Split probabilities by actual class (ground truth)
-            prob_no_diabetes = y_pred_proba[y_test == 0]  # Actually no diabetes
-            prob_diabetes = y_pred_proba[y_test == 1]     # Actually diabetes
-            
-            # Create histogram
-            fig, ax = plt.subplots(figsize=(10, 6))
-            ax.hist(prob_no_diabetes, bins=30, alpha=0.6, color='lightblue', 
-                   label=f'Ingen diabetes (n={len(prob_no_diabetes)})', edgecolor='black')
-            ax.hist(prob_diabetes, bins=30, alpha=0.6, color='lightcoral', 
-                   label=f'Diabetes (n={len(prob_diabetes)})', edgecolor='black')
-            ax.set_xlabel('Forudsagt sandsynlighed for diabetes')
-            ax.set_ylabel('Antal')
-            ax.set_title('Fordeling af forudsagte sandsynligheder efter faktisk diagnose')
-            ax.legend()
-            ax.grid(True, alpha=0.3)
-            ax.axvline(x=0.5, color='red', linestyle='--', linewidth=2, label='Beslutningsgrænse (0.5)')
-            ax.legend()
-            
-            st.pyplot(fig)
-            
-            # Show some statistics
-            col1, col2 = st.columns(2)
-            with col1:
-#                st.metric("Gennemsnitlig sandsynlighed - Ingen diabetes", f"{np.mean(prob_no_diabetes):.3f}")
-                st.metric("Antal korrekt klassificeret - Ingen diabetes", f"{len(prob_no_diabetes[prob_no_diabetes < 0.5])}")
-            with col2:
-#                st.metric("Gennemsnitlig sandsynlighed - Diabetes", f"{np.mean(prob_diabetes):.3f}")
-                st.metric("Antal korrekt klassificeret - Diabetes", f"{len(prob_diabetes[prob_diabetes >= 0.5])}")
+        st.write("I et neuralt netværk kan vi justere på hvor mange lag og hvor mange noder hvert lag skal have:")
 
-        
-        
+        #Make six slider, one for each layer. that is six layers in total. sliders decide amount of nodes per layer
+        layer_one = st.slider("Antal noder i lag 1", min_value=1, max_value=32, value=32, step=1)
+        layer_two = st.slider("Antal noder i lag 2", min_value=1, max_value=32, value=16, step=1)
+        layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=32, value=8, step=1)
+        layer_four = st.slider("Antal noder i lag 4", min_value=1, max_value=32, value=4, step=1)
+        layer_five = st.slider("Antal noder i lag 5", min_value=1, max_value=32, value=2, step=1)
+        layer_six = st.slider("Antal noder i lag 6", min_value=1, max_value=32, value=2, step=1)
+
+
+        st.write("""Nedenfor træner vi modellen. Vi kan også regne ud hvor mange parametre modellen bruger.
+Herefter plotter vi for at se hvor godt modellen klarer sig.
+                 Det kan godt tage op til ~et minut at køre denne model.""")
+        if st.button("Kør Neuralt Netværk"):
+            # Her definerer og træner vi modellen
+            mlp = sklearn.neural_network.MLPClassifier(hidden_layer_sizes=(layer_one, layer_two, layer_three, layer_four, layer_five, layer_six), 
+            max_iter=2000, early_stopping=True, random_state=42)
+            mlp.fit(data_træning, sande_gruppe_træning) 
+
+            # Her giver vi den trænede model test data som den ikke har set før, og beder om at forudsige prisen
+            beslutningsgrænse = 0.5
+            forudsagte_gruppe = mlp.predict_proba(data_test)[:,1]  
+            forudsagte_gruppe = (forudsagte_gruppe > beslutningsgrænse).astype(int)
+            forudsagte_score = mlp.predict_proba(data_test)[:, 1]
+
+            # Beregn antal parametre i modellen
+            # Coef er vægtene er intercept er bias. Den henter antallet direkte fra modellen.
+            n_params = sum(coef.size + intercept.size for coef, intercept in zip(mlp.coefs_, mlp.intercepts_))
+            st.write(f"Antal parametre i NN: {n_params}")
+            Plotting_class(sande_gruppe_test, forudsagte_score, forudsagte_gruppe)
+            st.subheader("Spørgsmål:")
+            st.markdown("""
+- Prøv at justere på antal neuroner i det neurale netværk - Kan du forbedre AUC og antallet at syge klassificeret som raske?
+- Får du det samme antal parameter når du regner efter?
+- Hvilken algoritme klarer sig bedst? Boosted decision tree eller neutralt netværk?
+- Prøv at justere på dit BDT og NN så de rammer samme AUC. Hvilken algoritme er så hurtigst?
+- Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?
+                        """)
+            
     elif dataset == "Gletsjer":
         #HER BEGYNDER VORES .ipynb
         st.subheader("Standard Niveau - Gletsjer")
