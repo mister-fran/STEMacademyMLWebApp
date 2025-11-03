@@ -143,11 +143,12 @@ def plotting_partikel(label_test, Forudsigelse):
     axs[1].set_xlabel('Forudsagt sandsynlighed for at det er en elektron')
     axs[1].set_ylabel('Antal')
     axs[1].set_title('Fordeling af forudsagte sandsynligheder farvekodet efter sande værdier',size=10)
+    axs[1].axvline(x=0.5, color='red', linestyle='--', linewidth=2, label='Beslutningsgrænse (0.5)')
     axs[1].legend(loc='upper center')
     axs[1].yaxis.tick_right()
     axs[1].yaxis.set_label_position("right")
     axs[1].grid(True, alpha=0.3)
-    axs[1].axvline(x=0.5, color='red', linestyle='--', linewidth=2, label='Beslutningsgrænse (0.5)')
+
 
     fig.tight_layout()  
     st.pyplot(fig)

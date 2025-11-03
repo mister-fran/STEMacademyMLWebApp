@@ -262,7 +262,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig. Denne kan tage op t
             plotting(sande_pris_test, forudsagte_pris)
             st.subheader("Spørgsmål:")
             st.markdown("""- Prøv at justere på antal neuroner i det neurale netværk - Kan du mindske usikkerheden?
-- Får du det samme antal parameter når du regner efter?
+- Får du det samme antal parametre når du regner efter?
 - Hvilken algoritme klarer sig bedst? Boosted decision tree eller neutralt netværk?
 - Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?""")
 
@@ -436,7 +436,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             st.subheader("Spørgsmål:")
             st.markdown("""
 - Prøv at justere på antal neuroner i det neurale netværk - Kan du forbedre AUC og antallet at syge klassificeret som raske?
-- Får du det samme antal parameter når du regner efter?
+- Får du det samme antal parametre når du regner efter?
 - Hvilken algoritme klarer sig bedst? Boosted decision tree eller neutralt netværk? Kan du få NN til at klare sig lige så godt som BDT?
 - Prøv at justere på dit BDT og NN så de rammer samme AUC. Hvilken algoritme er så hurtigst?
 - Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?
@@ -687,7 +687,7 @@ Testsættet bruges til at give den trænede model ny data (som den ikke kender s
             st.subheader("Evaluer resultat med AUC og histogram")
             st.write("Nu vil vi gerne inspicere hvor god vores model er til at forusige på data hvor den ikke ved om data tilsvarer en elektron eller ej. Det venstre plot viser en ROC-kurve dvs. hvor stor en andel af sande gæt har vi per andel af forkerte gæt. Jo tættere denne er på venstre øverste hjørne jo bedre. Dvs. når raten af forkerte gæt er 0.1 er raten af korrekte gæt allrede omkring 0.9.")
             st.write("Selve scoren Area Under Curve (AUC) angiver bare hvor tæt på hjørnet grafen er. 1 angiver en perfekt score.")
-            st.write("Det højre plot viser fordelingen af korrekte og forkerte gæt farvekodet efter hvad data rent faktisk svarede til. Dvs vi kigger på hvad modellen har gættet på ud fra hvad vores data rent faktisk svarede til.")
+            st.write("Det højre plot viser fordelingen af korrekte og forkerte gæt farvekodet efter hvad data rent faktisk svarede til. Dvs vi kigger på hvad modellen har gættet på ud fra hvad vores data rent faktisk svarede til. Den røde linjer svarer til den grænse modellen bruger til at afgøre hvad den skal gætte på alt efter hvilken sandsynlighed den forudsiger.")
             st.subheader("Spørgsmål")
             st.markdown("""
 - Ændr på antallet af boosting_rounds og se hvad der sker med modellene og resultatet. Kan du se forskel i performance for f.eks. 1, 10, 100, 1000 boosting_rounds?
@@ -755,7 +755,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             st.markdown("""
 - Sammenlign modellen med boosted decision tree ovenover. Hvilken algoritme klarer sig bedst?
 - Ændr antallet af neuroner per lag/antallet af lag og se hvordan performance ændrer sig.
-- Får du det samme antal parameter når du regner efter?
+- Får du det samme antal parametre når du regner efter?
 - Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?""")        
     # elif dataset == "Upload dit eget datasæt":
     #     st.subheader("Standard Niveau - Upload dit eget datasæt")
