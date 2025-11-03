@@ -38,7 +38,7 @@ def main():
 
     # Add description
     st.write('Alternativ til at køre .ipynb filen lokalt på din computer. Indeholder samme funktionaliteter som .ipynb filerne med uden at man skal skrive/se kode selv. ' \
-    'Avanceret indeholder mulighed for at ændre på de nævnte hyperparamtre i spørgsmålene.')
+    'Avanceret indeholder mulighed for at ændre på de nævnte hyperparamtre i spørgsmålene plus vælge inputvariable.')
     st.write("Vælg et datasæt for at begynde.")    
 
     # Add a download link for guidance PDF in the sidebar
