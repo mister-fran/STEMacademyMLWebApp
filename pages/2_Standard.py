@@ -229,7 +229,7 @@ Testsættet bruges til at give den trænede model data uden salgspriser, som den
         #NN 
         st.subheader("Neurale Netværk")
         st.write("Neurale Netværk (NN) kommer fra at opbygningen af det, minder om den måde vores neuroner i hjernen snakker sammen på. På samme måde som et decision tree er der forskellige lag og vi kan styre hvor mange lag der er, men nu er det ikke kun sandt eller falsk, i stedet fungerer noderne som knapper der kan fintunes. ")
-        st.write("Neurale netværk er mere følsomme overfor det data vi giver dem. Den fungerer bedst hvis resultatet er værdier mellem 0 og 1. Derfor bruger vi en funktion til at skalere vores data, kaldet StandardScaler.")
+        st.write("Neurale netværk er mere følsomme overfor det data vi giver dem. Den fungerer bedst hvis værdierne af data er mellem 0 og 1. Derfor bruger vi en funktion til at skalere vores data, kaldet StandardScaler.")
         scaler = sklearn.preprocessing.StandardScaler()
         data_træning = scaler.fit_transform(data_træning)
         data_test = scaler.transform(data_test)
@@ -398,7 +398,7 @@ Testsættet bruges til at give den trænede model data uden at vide hvilke perso
         #NN 
         st.subheader("Neurale Netværk")
         st.write("Neurale Netværk (NN) kommer fra at opbygningen af det, minder om den måde vores neuroner i hjernen snakker sammen på. På samme måde som et decision tree er der forskellige lag og vi kan styre hvor mange lag der er, men nu er det ikke kun sandt eller falsk, i stedet fungerer noderne som knapper der kan fintunes. ")
-        st.write("Neurale netværk er mere følsomme overfor det data vi giver dem. Den fungerer bedst hvis resultatet er værdier mellem 0 og 1. Derfor bruger vi en funktion til at skalere eller normalisere vores data, kaldet StandardScaler.")
+        st.write("Neurale netværk er mere følsomme overfor det data vi giver dem. Den fungerer bedst hvis værdierne af data er mellem 0 og 1. Derfor bruger vi en funktion til at skalere eller normalisere vores data, kaldet StandardScaler.")
         scaler = sklearn.preprocessing.StandardScaler()
         data_træning_transformed = scaler.fit_transform(data_træning)
         data_test_transformed = scaler.transform(data_test)
@@ -406,12 +406,12 @@ Testsættet bruges til at give den trænede model data uden at vide hvilke perso
         st.write("I et neuralt netværk kan vi justere på hvor mange lag og hvor mange noder hvert lag skal have:")
 
         #Make six slider, one for each layer. that is six layers in total. sliders decide amount of nodes per layer
-        layer_one = st.slider("Antal noder i lag 1", min_value=1, max_value=64, value=64, step=1)
-        layer_two = st.slider("Antal noder i lag 2", min_value=1, max_value=64, value=32, step=1)
-        layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=64, value=16, step=1)
-        layer_four = st.slider("Antal noder i lag 4", min_value=1, max_value=64, value=8, step=1)
-        layer_five = st.slider("Antal noder i lag 5", min_value=1, max_value=64, value=4, step=1)
-        layer_six = st.slider("Antal noder i lag 6", min_value=1, max_value=64, value=2, step=1)
+        layer_one = st.slider("Antal noder i lag 1", min_value=1, max_value=128, value=64, step=1)
+        layer_two = st.slider("Antal noder i lag 2", min_value=1, max_value=128, value=32, step=1)
+        layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=128, value=16, step=1)
+        layer_four = st.slider("Antal noder i lag 4", min_value=1, max_value=128, value=8, step=1)
+        layer_five = st.slider("Antal noder i lag 5", min_value=1, max_value=128, value=4, step=1)
+        layer_six = st.slider("Antal noder i lag 6", min_value=1, max_value=128, value=2, step=1)
 
 
         st.write("""Nedenfor træner vi modellen. Vi kan også regne ud hvor mange parametre modellen bruger.
@@ -437,7 +437,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             st.markdown("""
 - Prøv at justere på antal neuroner i det neurale netværk - Kan du forbedre AUC og antallet at syge klassificeret som raske?
 - Får du det samme antal parameter når du regner efter?
-- Hvilken algoritme klarer sig bedst? Boosted decision tree eller neutralt netværk?
+- Hvilken algoritme klarer sig bedst? Boosted decision tree eller neutralt netværk? Kan du få NN til at klare sig lige så godt som BDT?
 - Prøv at justere på dit BDT og NN så de rammer samme AUC. Hvilken algoritme er så hurtigst?
 - Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?
                         """)
@@ -558,7 +558,7 @@ Testsættet bruges til at give den trænede model data uden dybder, som den så 
         #NN 
         st.subheader("Neurale Netværk")
         st.write("Neurale Netværk (NN) kommer fra at opbygningen af det, minder om den måde vores neuroner i hjernen snakker sammen på. På samme måde som et decision tree er der forskellige lag og vi kan styre hvor mange lag der er, men nu er det ikke kun sandt eller falsk, i stedet fungerer noderne som knapper der kan fintunes.")
-        st.write("Neurale netværk er mere følsomme overfor det data vi giver dem. Den fungerer bedst hvis resultatet er værdier mellem 0 og 1. Derfor bruger vi en funktion til at skalere vores data, kaldet StandardScaler.")
+        st.write("Neurale netværk er mere følsomme overfor det data vi giver dem. Den fungerer bedst hvis værdierne af data er mellem 0 og 1. Derfor bruger vi en funktion til at skalere vores data, kaldet StandardScaler.")
         scaler = sklearn.preprocessing.StandardScaler()
         data_træning = scaler.fit_transform(data_træning)
         data_test = scaler.transform(data_test)
@@ -595,7 +595,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             st.markdown("""
 - Prøv at justere på antal neuroner i det neurale netværk - Bliver modellen bedre dårligere/kører den hurtigere langsommere?
 - Får du det samme antal parametre når du regner efter?
-- Hvilken algoritme klarer sig bedst? Boosted decision tree eller neutralt netværk?
+- Hvilken algoritme klarer sig bedst? Boosted decision tree eller neutralt netværk? Kan du få NN til at klare sig lige så godt som BDT? Eller omvendt?
 - Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?
                         """)
 
@@ -718,7 +718,7 @@ Testsættet bruges til at give den trænede model ny data (som den ikke kender s
         #NN 
         st.subheader("Neurale Netværk")
         st.write("Neurale Netværk (NN) kommer fra at opbygningen af det, minder om den måde vores neuroner i hjernen snakker sammen på. På samme måde som et decision tree er der forskellige lag og vi kan styre hvor mange lag der er, men nu er det ikke kun sandt eller falsk, i stedet fungerer noderne som knapper der kan fintunes. ")
-        st.write("Neurale netværk er mere følsomme overfor det data vi giver dem. Den fungerer bedst hvis data er værdier mellem 0 og 1. Derfor bruger vi en funktion til at skalere vores data, kaldet StandardScaler.")
+        st.write("Neurale netværk er mere følsomme overfor det data vi giver dem. Den fungerer bedst hvis værdierne af data er mellem 0 og 1. Derfor bruger vi en funktion til at skalere vores data, kaldet StandardScaler.")
         scaler = sklearn.preprocessing.StandardScaler()
         data_train_transformed = scaler.fit_transform(data_train)
         data_test_transformed = scaler.transform(data_test)    
