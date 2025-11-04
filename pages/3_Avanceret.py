@@ -4,7 +4,7 @@ import pandas as pd
 from utils.data_loader import load_huspriser_dataset, load_diabetes_dataset, load_gletsjer_dataset, load_partikel_dataset
 import os
 from utils.config import DATA_PATHS
-from utils.plots import plotting, plotting_partikel, Plotting_class
+from utils.plots import plotting, plotting_glet, plotting_partikel, Plotting_class 
 
 
 #Importer pakker
@@ -205,7 +205,7 @@ Testsættet bruges til at give den trænede model data uden dybder, som den så 
                         eval_metric='mse', callbacks=[early_stopping(15)])
 
             forudsagt_dybde = gbm_test.predict(data_test, num_iteration=gbm_test.best_iteration_)
-            plotting(sand_dybde_test, forudsagt_dybde)
+            plotting_glet(sand_dybde_test, forudsagt_dybde)
 
             res = sklearn.inspection.permutation_importance(gbm_test, data_test, sand_dybde_test, scoring="neg_mean_squared_error")
 
@@ -282,7 +282,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             # Coef er vægtene er intercept er bias. Den henter antallet directe fra modellen.
             n_params = sum(coef.size + intercept.size for coef, intercept in zip(mlp.coefs_, mlp.intercepts_))
             st.write(f"Antal parametre i NN: {n_params}")
-            plotting(sand_dybde_test, forudsagt_dybde)
+            plotting_glet(sand_dybde_test, forudsagt_dybde)
             st.subheader("Spørgsmål:")
             st.markdown("""
 - Prøv at justere på antal neuroner i det neurale netværk - Bliver modellen bedre dårligere/kører den hurtigere langsommere?
