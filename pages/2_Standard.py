@@ -4,8 +4,7 @@ import pandas as pd
 from utils.data_loader import load_huspriser_dataset, load_diabetes_dataset, load_gletsjer_dataset, load_partikel_dataset
 import os
 from utils.config import DATA_PATHS
-from utils.plots import plotting, plotting_partikel, Plotting_class
-
+from utils.plots import plotting, plotting_glet, plotting_partikel, Plotting_class, plotting_reg_own, plotting_class_own
 
 #Importer pakker
 # Data
