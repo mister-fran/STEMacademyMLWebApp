@@ -19,7 +19,7 @@ def main():
     st.write('Velkommen til Machine Learning - STEM Academy! Denne hjemmeside er et værktøj til forløbet om Machine Learning for STEM Academy. Hjemmesiden er i stand til at køre alle de gennemgåede ML-modeller online.')
     st.write('Vælg Standard i venstre side for at begynde. Du kan køre alt hvad der ligger i .ipynb filerne online. ')
     st.markdown(' - Huspriser: Regression  \n - Diabetes: Classification  \n - Gletsjer: Regression  \n - Partikel: Classification')
-    st.write('Under Avanceret har du adgang til flere hyperparametre samt valg af inputvariable. Husk du kan hente vejledningen ved at trykke på knappen i sidepanelet i venstre side. God arbejdslyst!')
+    st.write('Under Avanceret har du adgang til flere hyperparametre samt valg af inputvariable. Her kan du også uploade dine egne datasæt og prøve modellerne af på dem. Husk du kan hente vejledningen ved at trykke på knappen i sidepanelet i venstre side. Under fanen Ekstra Materiale kan du finde videoer der forklarer nogle af de gennemgåede koncepter på en lidt anden og måske mere visuel måde. God arbejdslyst!')
     # Add a download link for guidance PDF in the sidebar
     
     st.sidebar.write("") # Add vertical space above button

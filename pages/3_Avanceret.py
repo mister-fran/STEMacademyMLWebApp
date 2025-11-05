@@ -21,12 +21,12 @@ import sklearn as sklearn
 # LightGBM - pakke til at køre decision tree
 import lightgbm as lgb
 from lightgbm import early_stopping
-st.set_page_config(page_title="Standard Niveau", page_icon="🎯")
+st.set_page_config(page_title="Avanceret Niveau", page_icon="🎯")
 
 
 
 def main():
-    st.title("🎯 Standard Niveau")
+    st.title("🎯 Avanceret Niveau")
 
     # Load datasets using cached functions
     DS3 = load_gletsjer_dataset()
