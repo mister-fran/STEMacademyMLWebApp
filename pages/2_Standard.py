@@ -188,8 +188,10 @@ Testsættet bruges til at give den trænede model data uden salgspriser, som den
         if st.button("Kør model"):
             gbm_test = lgb.LGBMRegressor(objective='regression', n_estimators=boosting_rounds, verbosity=-1)
 
+            
             gbm_test.fit(data_træning, sande_pris_træning, eval_set=[(data_test, sande_pris_test)], 
                         eval_metric='mse', callbacks=[early_stopping(15)])
+            st.session_state['gbm_model'] = gbm_test
 
             forudsagte_pris = gbm_test.predict(data_test, num_iteration=gbm_test.best_iteration_)
             plotting(sande_pris_test, forudsagte_pris)
@@ -225,6 +227,18 @@ Testsættet bruges til at give den trænede model data uden salgspriser, som den
 
             st.write("Er resultatet som du forventede?")
 
+
+        st.subheader("Sæt egne værdier ind og se modellens forudsigelse")
+        #Make input fields for each variable except 'Salgspris'
+        input_values = {}
+        for var in variabler[:-1]:
+            input_values[var] = st.number_input(f"Indtast værdi for {var}", value=0)
+        #Make a button to predict price
+        if st.button("Forudsig pris på hus"):
+            input_array = np.array([input_values[var] for var in input_variabler]).reshape(1, -1)
+            predicted_price = st.session_state['gbm_model'].predict(input_array, num_iteration=st.session_state['gbm_model'].best_iteration_)
+            st.write(f"Den forudsagte salgspris er: {predicted_price[0]:,.2f} mio.kr.")
+
         #NN 
         st.subheader("Neurale Netværk")
         st.write("Neurale Netværk (NN) kommer fra at opbygningen af det, minder om den måde vores neuroner i hjernen snakker sammen på. På samme måde som et decision tree er der forskellige lag og vi kan styre hvor mange lag der er, men nu er det ikke kun sandt eller falsk, i stedet fungerer noderne som knapper der kan fintunes. ")
@@ -252,6 +266,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig. Denne kan tage op t
             mlp = sklearn.neural_network.MLPRegressor(hidden_layer_sizes=(layer_one, layer_two, layer_three, layer_four, layer_five, layer_six), 
             max_iter=2000, early_stopping=True, random_state=42)
             mlp.fit(data_træning, sande_pris_træning) 
+            st.session_state['mlp'] = mlp #Gem modellen til senere
             # Her giver vi den trænede model test data som den ikke har set før, og beder om at forudsige prisen
             forudsagte_pris = mlp.predict(data_test)  
             # Beregn antal parametre i modellen
@@ -265,8 +280,17 @@ Herefter plotter vi for at se hvor godt modellen klarer sig. Denne kan tage op t
 - Hvilken algoritme klarer sig bedst? Boosted decision tree eller neutralt netværk?
 - Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?""")
 
-
-
+        st.subheader("Sæt egne værdier ind og se modellens forudsigelse")
+        #Make input fields for each variable except 'Salgspris'
+        input_values = {}
+        for var in variabler[:-1]:
+            input_values[var] = st.number_input(f"Indtast værdi for {var} ", value=0)
+        #Make a button to predict price
+        if st.button("Forudsig pris på hus "):
+            input_array = np.array([input_values[var] for var in input_variabler]).reshape(1, -1)
+            input_array = scaler.transform(input_array)
+            predicted_price = st.session_state['mlp'].predict(input_array)
+            st.write(f"Den forudsagte salgspris er: {predicted_price[0]:,.2f} mio.kr.")
 
     #DIABETES .ipynb
     elif dataset == "Diabetes":
@@ -349,7 +373,7 @@ Testsættet bruges til at give den trænede model data uden at vide hvilke perso
             # Her træner vi vores model på vores trænings data
             gbm_test.fit(data_træning, sande_gruppe_træning, eval_set=[(data_test, sande_gruppe_test)], 
                         callbacks=[early_stopping(15)])
-
+            st.session_state['gbm_test'] = gbm_test
             # Her får vi sandsynlighederne for om hver person har diabetes eller ej
             forudsagte_score = gbm_test.predict_proba(data_test, num_iteration=gbm_test.best_iteration_)[:, 1]
 
@@ -394,6 +418,18 @@ Testsættet bruges til at give den trænede model data uden at vide hvilke perso
             st.pyplot(fig)
 
             st.markdown("- Er resultatet som du forventede?")
+
+        st.subheader("Sæt egne værdier ind og se modellens forudsigelse")
+        #Make input fields for each variable except 'Salgspris'
+        input_values = {}
+        for var in variabler[:-1]:
+            input_values[var] = st.number_input(f"Indtast værdi for {var} ", value=0)
+        #Make a button to predict price
+        if st.button("Forudsig sandsynlighed for diabetes "):
+            input_array = np.array([input_values[var] for var in input_variabler]).reshape(1, -1)
+            predicted_prob = st.session_state['gbm_test'].predict_proba(input_array, num_iteration=st.session_state['gbm_test'].best_iteration_)
+            st.write(f"Den forudsagte sandsynlighed for diabetes er: {predicted_prob[0][1]:,.2f}")
+
         #NN 
         st.subheader("Neurale Netværk")
         st.write("Neurale Netværk (NN) kommer fra at opbygningen af det, minder om den måde vores neuroner i hjernen snakker sammen på. På samme måde som et decision tree er der forskellige lag og vi kan styre hvor mange lag der er, men nu er det ikke kun sandt eller falsk, i stedet fungerer noderne som knapper der kan fintunes. ")
@@ -421,6 +457,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             mlp = sklearn.neural_network.MLPClassifier(hidden_layer_sizes=(layer_one, layer_two, layer_three, layer_four, layer_five, layer_six), 
             max_iter=2000, early_stopping=True, random_state=42)
             mlp.fit(data_træning_transformed, sande_gruppe_træning) 
+            st.session_state['mlp'] = mlp #Gem modellen til senere
 
             # Her giver vi den trænede model test data som den ikke har set før, og beder om at forudsige prisen
             forudsagte_gruppe = mlp.predict_proba(data_test_transformed)[:,1]  
@@ -440,6 +477,19 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
 - Prøv at justere på dit BDT og NN så de rammer samme AUC. Hvilken algoritme er så hurtigst?
 - Leg rundt med andelen af data du bruger. Hvordan ændres resultatet alt efter hvor meget data den har. Hvor meget data skal du bruge for at have en rimelig model og forudsigelse?
                         """)
+
+        st.subheader("Sæt egne værdier ind og se modellens forudsigelse")
+        #Make input fields for each variable except 'Salgspris'
+        input_values = {}
+        for var in variabler[:-1]:
+            input_values[var] = st.number_input(f"Indtast værdi for {var}", value=0)
+        #Make a button to predict price
+        if st.button("Forudsig sandsynlighed for diabetes"):
+            input_array = np.array([input_values[var] for var in input_variabler]).reshape(1, -1)
+            input_array = scaler.transform(input_array)
+            predicted_prob = st.session_state['mlp'].predict_proba(input_array)
+            st.write(f"Den forudsagte sandsynlighed for diabetes er: {predicted_prob[0][1]:,.2f}")
+
             
     elif dataset == "Gletsjer":
         #HER BEGYNDER VORES .ipynb
