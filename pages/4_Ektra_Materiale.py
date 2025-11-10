@@ -99,8 +99,8 @@ def main():
     st.markdown('- Video med Neurale netværk forklaret med en enkelt node. Der er et rigtigt godt eksempel fra 4:30 med at forudsige et skud fra en kanon (det skrå kast). [Link](https://www.youtube.com/watch?v=GkiITbgu0V0&t=270s)')   
     st.markdown('- Video med neurale netværk, forklaret lidt mere I dybden med matematikken og hvordan activation functions virker og gør at vi kan lave bedre forudsigelser. [Link](https://www.youtube.com/watch?v=CqOfi41LfDw)')
 
-    st.subheader("Guthub")
-    st.markdown('- Find folderen "STEMAcademyML_Materiale".[Link](https://github.com/troelspetersen/STEMacademyML/tree/main) Her ligger alt materialet også. Denne kan du også åbne filer fra direkte på Google Colab. [Link](https://colab.research.google.com/)')
+    st.subheader("Github og Colab")
+    st.markdown('- Find folderen "STEMAcademyML_Materiale" [Link](https://github.com/troelspetersen/STEMacademyML/tree/main). Her ligger alt undervisningsmaterialet også. Denne kan du også åbne filer fra direkte på Google Colab. [Link](https://colab.research.google.com/)')
     
 if __name__ == "__main__":
     main()
