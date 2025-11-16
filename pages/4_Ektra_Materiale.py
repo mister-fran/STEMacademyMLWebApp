@@ -98,7 +98,7 @@ def main():
     st.subheader("Neurale Netværk") 
     st.markdown('- Video med Neurale netværk forklaret med en enkelt node. Der er et rigtigt godt eksempel fra 4:30 med at forudsige et skud fra en kanon (det skrå kast). [Link](https://www.youtube.com/watch?v=GkiITbgu0V0&t=270s)')   
     st.markdown('- Video med neurale netværk, forklaret lidt mere I dybden med matematikken og hvordan activation functions virker og gør at vi kan lave bedre forudsigelser. [Link](https://www.youtube.com/watch?v=CqOfi41LfDw)')
-    st.markdown('- Tensorflow Playground (Mega fed). Interaktiv hjemmeside hvor man kan lege med et neuralt netværk med forskellige datasæt, aktiveringsfunktioner, inputvariable mm. [Link](https://playground.tensorflow.org/)' \
+    st.markdown('- Tensorflow Playground (Mega fed). Interaktiv hjemmeside hvor man kan lege med et neuralt netværk med forskellige datasæt, aktiveringsfunktioner, inputvariable mm. [Link](https://playground.tensorflow.org/) ' \
                 'Opgaver til at komme i gang: Prøv at danne fungerende modeller for de forskellige datasæt i venstre side (forskellige fordelinger af orange og blå prikker). Prøv at give den forskellige inputparametre og se om du stadig kan forudsige svaret. Prøv forskellige loss functions, activation functions. Tilføj noise og prøv igen.')
 
     st.subheader("Github og Colab")
