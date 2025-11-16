@@ -160,7 +160,7 @@ def main():
         st.graphviz_chart(dot)
         st.write("Max dybde af træet:", estimator.get_depth())
         a = np.unique(estimator.predict(input_data)).size
-        st.write("Forskellige priser den kan forudsige:",a )
+        st.write("Forskellige dybder den kan forudsige:",a )
 
         st.subheader("Spørgsmål")
         st.markdown("""- Inspicer træet. Forstår du/I, hvad de forskellige tal betyder?
