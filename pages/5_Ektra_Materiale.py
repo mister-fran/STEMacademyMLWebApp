@@ -3,6 +3,15 @@ import streamlit as st
 from utils.config import DATA_PATHS
 import os
 
+#Reset session state
+PAGE_ID = "Ekstra_Materiale"  
+# If we arrived here from another page, reset this page's state
+if st.session_state.get("_active_page") != PAGE_ID:
+    st.write(st.session_state.get("_active_page"))
+    st.session_state.clear()
+    st.session_state["_active_page"] = PAGE_ID
+    st.rerun()
+
 def main():
     st.set_page_config(
         page_title="Ekstra Materiale",  # This appears in browser tab

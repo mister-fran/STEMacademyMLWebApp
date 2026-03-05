@@ -25,3 +25,8 @@ def load_partikel_dataset():
     """Load partikel dataset"""
     return pd.read_csv(DATA_PATHS['partikel'])
 
+@st.cache_data
+def load_pendul_dataset():
+    """Load pendul dataset"""
+    return pd.read_csv(DATA_PATHS['pendul1'])
+

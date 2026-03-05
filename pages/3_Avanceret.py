@@ -23,7 +23,14 @@ import lightgbm as lgb
 from lightgbm import early_stopping
 st.set_page_config(page_title="Avanceret Niveau", page_icon="🎯")
 
-
+#Reset session state
+PAGE_ID = "Avanceret"  # change per page
+# If we arrived here from another page, reset this page's state
+if st.session_state.get("_active_page") != PAGE_ID:
+    st.write(st.session_state.get("_active_page"))
+    st.session_state.clear()
+    st.session_state["_active_page"] = PAGE_ID
+    st.rerun()
 
 def main():
     st.title("🎯 Avanceret Niveau")
