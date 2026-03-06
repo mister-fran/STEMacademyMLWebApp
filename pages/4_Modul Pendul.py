@@ -20,6 +20,10 @@ import sklearn as sklearn
 # LightGBM - pakke til at køre decision tree
 import lightgbm as lgb
 from lightgbm import early_stopping
+
+#Kompliceret ligning
+from scipy.special import ellipk
+
 st.set_page_config(page_title="Standard Niveau", page_icon="🎯")
 
 #Reset session state
@@ -104,11 +108,11 @@ def main():
     data_test_scaled = scaler.transform(data_test)
 
     st.write("I et neuralt netværk kan vi justere på hvor mange lag og hvor mange noder hvert lag skal have:")
-    layer_one   = st.slider("Antal noder i lag 1", min_value=1, max_value=128, value=64, step=1)             
-    layer_two   = st.slider("Antal noder i lag 2", min_value=1, max_value=128, value=32, step=1)            
-    layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=128, value=16, step=1)
-    layer_four  = st.slider("Antal noder i lag 4", min_value=1, max_value=128, value=8, step=1)
-    layer_five  = st.slider("Antal noder i lag 5", min_value=1, max_value=128, value=4, step=1)
+    layer_one   = st.slider("Antal noder i lag 1", min_value=1, max_value=128, value=2, step=1)             
+    layer_two   = st.slider("Antal noder i lag 2", min_value=1, max_value=128, value=2, step=1)            
+    layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=128, value=2, step=1)
+    layer_four  = st.slider("Antal noder i lag 4", min_value=1, max_value=128, value=2, step=1)
+    layer_five  = st.slider("Antal noder i lag 5", min_value=1, max_value=128, value=2, step=1)
     layer_six   = st.slider("Antal noder i lag 6", min_value=1, max_value=128, value=2, step=1)
     st.write("Nedenfor træner vi modellen. Vi kan også regne ud hvor mange parametre modellen bruger.")
     st.write("Herefter plotter vi for at se hvor godt modellen klarer sig.")
@@ -120,13 +124,14 @@ def main():
         st.session_state.eval = None  # store plots/data you need
 
     def plotting(sand, forudsagt):
-            fig, ax = plt.subplots(figsize=(6, 6))
+            fig, ax = plt.subplots(figsize=(5, 5))
             ax.scatter(sand, forudsagt, alpha=0.5)
             ax.plot([min(sand), max(sand)], [min(sand), max(sand)], color='red', linestyle='--')
             ax.set_xlabel('Sand værdi')
             ax.set_ylabel('Forudsagt værdi')
             ax.set_title('Sand vs Forudsagt')
             ax.grid()
+            fig.tight_layout()
             return fig
 
     # if st.button("Kør Neuralt Netværk"):
@@ -229,10 +234,26 @@ def main():
         )
 
         st.write("Evaluer modellens performance:")
-        fig1 = plotting(ev["sand_periode_test"], ev["forudsagt_periode"])
-        st.pyplot(fig1, use_container_width=False)
+        col1, col2 = st.columns(2)
+        with col1:
+            fig1 = plotting(ev["sand_periode_test"], ev["forudsagt_periode"])
+            st.pyplot(fig1, use_container_width=True)
 
-        st.write("Permutation Importance:")
+        with col2:
+            # Residual histogram
+            residuals = ev["sand_periode_test"] - ev["forudsagt_periode"]
+            fig3, ax3 = plt.subplots(figsize=(5, 5))
+            ax3.hist(residuals, bins=30, edgecolor='black', alpha=0.7)
+            ax3.axvline(x=0, color='red', linestyle='--', label='Perfekt forudsigelse')
+            ax3.set_xlabel("Sand periode − Forudsagt periode")
+            ax3.set_ylabel("Antal")
+            ax3.set_title("Histogram over residualer")
+            ax3.legend()
+            ax3.grid(True)
+            fig3.tight_layout()
+            st.pyplot(fig3, use_container_width=True)
+
+        #Permutation Importance
         fig2, ax2 = plt.subplots(figsize=(8, 4))
         y = np.arange(len(ev["perm_vals"]))
         ax2.barh(y, ev["perm_vals"])
@@ -254,6 +275,7 @@ def main():
             st.info("Upload en Excel-fil for at lave forudsigelser.")
         else:
             Vis_Beregning_med_small_angle_approximation = st.checkbox("Vis beregning med small angle approximation", value=False)
+            Vis_Beregning_med_Kompliceret_Ligning = st.checkbox("Vis beregning med kompliceret ligning", value=False)
             df = pd.read_excel(dataset_path, skiprows=2, engine='openpyxl') #Understøtter nyere excelformater
 
             # Number of features the model expects (no need for matching column names)
@@ -268,6 +290,24 @@ def main():
             L = X_new[:, 0]
             T_simple = 2 * np.pi * np.sqrt(L / g)
 
+            #Bergen periode med kompliceret ligning
+            rho_air = 1.225        # kg/m^3
+            C_d = 1.1              # cylinder, transverse flow
+            g = 9.81
+
+            L, alpha, theta0, crosssection, m_total = X_new[:, 0], X_new[:, 1], X_new[:, 2], X_new[:, 3], X_new[:, 4]
+            shape = ((1/3)*alpha + (1 - alpha)) / ((1/2)*alpha + (1 - alpha))
+            T0 = 2 * np.pi * np.sqrt(L / g * shape)
+            k2 = np.sin(theta0 / 2)**2
+            angle_factor = (2 / np.pi) * ellipk(k2)
+            A = crosssection
+            omega0 = 2 * np.pi / T0
+
+            gamma = (rho_air * C_d * A * L) / m_total
+            drag_factor = 1 + (gamma / omega0)**2 / 8
+
+            T_komp =  T0 * angle_factor * drag_factor
+
             #Skaler input så vi kan bruge det i vores NN model
             X_new_scaled = scaler.transform(X_new)
             #Forudsig med modellen på vores egen input data 
@@ -276,27 +316,31 @@ def main():
             #Regn usikkerheder
             mae_model = np.mean(np.abs(forudsagt_periode_egen - målt_periode))
             mae_simple = np.mean(np.abs(T_simple - målt_periode))
+            mae_komp = np.mean(np.abs(T_komp - målt_periode))
 
-            #Plot
-            plt.figure(figsize=(6,6))
-            plt.scatter(målt_periode, forudsagt_periode_egen, alpha=0.5, label=f"Model (MAE={mae_model:.3f})")
-
-            if Vis_Beregning_med_small_angle_approximation == 1:
-                mn = float(np.min([målt_periode.min(), forudsagt_periode_egen.min(), T_simple.min()]))
-                mx = float(np.max([målt_periode.max(), forudsagt_periode_egen.max(), T_simple.max()]))
-                plt.plot([mn, mx], [mn, mx], "r--", label="Perfekt overensstemmelse")
-                plt.scatter(målt_periode, T_simple, alpha=0.5, label=f"T=2π√(L/g) (MAE={mae_simple:.3f})")
-                plt.ylabel("Forudsagt / Beregnet Periode")
-            else:
-                mn = float(np.min([målt_periode.min(), forudsagt_periode_egen.min()]))
-                mx = float(np.max([målt_periode.max(), forudsagt_periode_egen.max()]))
-                plt.plot([mn, mx], [mn, mx], "r--", label="Perfekt overensstemmelse")
+            col1, col2 = st.columns([1.5,1])
+            with col1:
+                #Plot
+                plt.figure(figsize=(6,6))
+                plt.scatter(målt_periode, forudsagt_periode_egen, alpha=0.5, label=f"Model (MAE={mae_model:.3f})", color='blue')
+                mn = float(np.min([målt_periode.min(), forudsagt_periode_egen.min(), T_simple.min(), T_komp.min()]))
+                mx = float(np.max([målt_periode.max(), forudsagt_periode_egen.max(), T_simple.max(), T_komp.max()]))
                 plt.ylabel("Forudsagt Periode")
-            plt.xlabel("Målt Periode")
-            plt.title("Målt vs Forudsagt Periode")
-            plt.grid(True)
-            plt.legend()
-            st.pyplot(plt.gcf(), use_container_width=False)
+
+                if Vis_Beregning_med_small_angle_approximation == 1:
+                    plt.scatter(målt_periode, T_simple, alpha=0.5, label=f"T=2π√(L/g) (MAE={mae_simple:.3f})", color='orange')
+                    plt.ylabel("Forudsagt / Beregnet Periode")
+
+                if Vis_Beregning_med_Kompliceret_Ligning == 1:
+                    plt.scatter(målt_periode, T_komp, alpha=0.5, label=f"Kompliceret ligning (MAE={mae_komp:.3f})", color='green')
+                    plt.ylabel("Forudsagt / Beregnet Periode")
+
+                plt.plot([mn, mx], [mn, mx], "r--", label="Perfekt overensstemmelse")
+                plt.xlabel("Målt Periode")
+                plt.title("Målt vs Forudsagt Periode")
+                plt.grid(True)
+                plt.legend()
+                st.pyplot(plt.gcf(), use_container_width=True)
 
 if __name__ == "__main__":
     main()
