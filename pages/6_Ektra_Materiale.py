@@ -15,81 +15,9 @@ if st.session_state.get("_active_page") != PAGE_ID:
 def main():
     st.set_page_config(
         page_title="Ekstra Materiale",  # This appears in browser tab
-        page_icon=":books:",  # Icon in browser tab
         layout="wide"  # Optional: use full width
     )
 
-    st.sidebar.write("") # Add vertical space above button
-
-    #Add Download Buttons for PDFS
-
-    # Download button for PDF HUSPRISER
-    if os.path.exists(DATA_PATHS['VejledningHUSPRISER']):
-        try:
-            with open(DATA_PATHS['VejledningHUSPRISER'], "rb") as pdf_file:
-                pdf_bytes = pdf_file.read()
-            
-            st.sidebar.download_button(
-                label="📥 Hent vejledning til Huspriser",
-                data=pdf_bytes,
-                file_name="vejledningHUSPRISER.pdf",
-                mime="application/pdf"
-            )
-        except Exception as e:
-            st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
-    else:
-        st.sidebar.warning("⚠️ Vejledning PDF ikke fundet.")
-
-    # Download button for PDF DIABETES
-    if os.path.exists(DATA_PATHS['VejledningDIABETES']):
-        try:
-            with open(DATA_PATHS['VejledningDIABETES'], "rb") as pdf_file:
-                pdf_bytes = pdf_file.read()
-            
-            st.sidebar.download_button(
-                label="📥 Hent vejledning til Diabetes",
-                data=pdf_bytes,
-                file_name="vejledningDIABETES.pdf",
-                mime="application/pdf"
-            )
-        except Exception as e:
-            st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
-    else:
-        st.sidebar.warning("⚠️ Vejledning PDF ikke fundet.")
-    
-    # Download button for PDF GLETSJER
-    if os.path.exists(DATA_PATHS['VejledningGLETSJER']):
-        try:
-            with open(DATA_PATHS['VejledningGLETSJER'], "rb") as pdf_file:
-                pdf_bytes = pdf_file.read()
-            
-            st.sidebar.download_button(
-                label="📥 Hent vejledning til Gletsjer",
-                data=pdf_bytes,
-                file_name="vejledningGLETSJER.pdf",
-                mime="application/pdf"
-            )
-        except Exception as e:
-            st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
-    else:
-        st.sidebar.warning("⚠️ Vejledning PDF ikke fundet.")
-
-    # Download button for PDF PARTIKEL
-    if os.path.exists(DATA_PATHS['VejledningPARTIKEL']):
-        try:
-            with open(DATA_PATHS['VejledningPARTIKEL'], "rb") as pdf_file:
-                pdf_bytes = pdf_file.read()
-            
-            st.sidebar.download_button(
-                label="📥 Hent vejledning til Partikel",
-                data=pdf_bytes,
-                file_name="vejledningPARTIKEL.pdf",
-                mime="application/pdf"
-            )
-        except Exception as e:
-            st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
-    else:
-        st.sidebar.warning("⚠️ Vejledning PDF ikke fundet.")
 
     st.markdown("---")
 

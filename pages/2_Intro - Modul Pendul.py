@@ -24,7 +24,7 @@ from lightgbm import early_stopping
 #Kompliceret ligning
 from scipy.special import ellipk
 
-st.set_page_config(page_title="Standard Niveau", page_icon="🎯")
+st.set_page_config(page_title="Standard Niveau")
 
 #Reset session state
 PAGE_ID = "pendul"  # change per page
@@ -42,8 +42,10 @@ def main():
     #DSPendul = load_pendul_dataset()
 
     # Add description
-    st.write('Alternativ til at køre .ipynb filen lokalt på din computer. Indeholder samme funktionaliteter som .ipynb filerne med uden at man skal skrive/se kode selv.')
-    st.write("Vælg et datasæt for at begynde.")    
+    st.write('Hvis du aldrig har arbejdet med Machine Learning før er du havnet det rigtige sted. ' \
+    'Modul Pendul er en basal introdution til det neurale netværk forklaret i kontekst af det simple pendul. ' \
+    'Læs vejledningen (som findes i venstre side) sideløbende med denne side.')
+    st.write("God arbejdslyst.")    
 
     
     st.sidebar.write("") # Add vertical space above button
@@ -55,7 +57,7 @@ def main():
                 pdf_bytes = pdf_file.read()
             
             st.sidebar.download_button(
-                label="📥 Hent vejledning til Pendul",
+                label="Hent vejledning til Modul Pendul",
                 data=pdf_bytes,
                 file_name="vejledningPENDUL.pdf",
                 mime="application/pdf"
@@ -63,7 +65,7 @@ def main():
         except Exception as e:
             st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
     else:
-        st.sidebar.warning("⚠️ Vejledning PDF ikke fundet.")
+        st.sidebar.warning("Vejledning PDF ikke fundet.")
     # Pendul
 
     ## Data

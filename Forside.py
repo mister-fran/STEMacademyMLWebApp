@@ -5,94 +5,28 @@ from utils.config import DATA_PATHS
 import os
 #Hi
 
-def main():
+def main(): 
     # Configure the page
     st.set_page_config(
         page_title="STEM Academy - Machine Learning",  # This appears in browser tab
-        page_icon=":mortar_board:",  # Icon in browser tab
         layout="wide"  # Optional: use full width
     )
-    
     st.title("Machine Learning - STEM Academy")
 
     # Welcome message
-    st.write('Velkommen til Machine Learning - STEM Academy! Denne hjemmeside er et værktøj til forløbet om Machine Learning for STEM Academy. Hjemmesiden er i stand til at køre alle de gennemgåede ML-modeller online.')
-    st.write('Vælg Standard i venstre side for at begynde. Du kan køre alt hvad der ligger i .ipynb filerne online. ')
-    st.markdown(' - Huspriser: Regression  \n - Diabetes: Classification  \n - Gletsjer: Regression  \n - Partikel: Classification')
-    st.write('Under Avanceret har du adgang til flere hyperparametre samt valg af inputvariable. Her kan du også uploade dine egne datasæt og prøve modellerne af på dem. Husk du kan hente vejledningen ved at trykke på knappen i sidepanelet i venstre side. Under fanen Ekstra Materiale kan du finde videoer der forklarer nogle af de gennemgåede koncepter på en lidt anden og måske mere visuel måde. God arbejdslyst!')
+    st.write('Velkommen til Machine Learning - STEM Academy!')
+    st.write('Denne hjemmeside tilbyder et self-contained forløb til undervisning i Machine Learning (ML) i gymnasiet med udgangspunkt i forskellige udgangsniveauer; Hjemmesiden tilbyder forløb til elever der aldrig har set ML før, besidder basal viden, krævende elever der vil udfordre sig selv.')
+    st.write('Til klasser med tekniske kan dette eventuelt kombineres med undervisning i programmeringsproget python, enten lokalt eller på Google Colab, som er et, nemt at anvende, webinterface til at køre pythonkode. ')
+    st.write('Forløbene er delt ind efter sværhedsgrader:')
+    st.markdown(' - Intro - Modul Pendul: Forløb til dem der aldrig har arbejdet med ML før med udgangspunkt i det simple pendul. Udelukkende introduktion til regression med det neurale netværk. \n'\
+        ' - Standard: Til dem der har basal viden indenfor ML. Forløbet er mere matematisk og går mere i dybden med de bagvedliggende koncepter. Fire datasæt tilbydes med afsæt i forskellige problemstillinger fra hverdagen/fysikken. Introduktion til både regression og classification med det neurale netværk og boosted decision trees. \n'\
+            ' - Avanceret: Hvis du allerede har en grundlæggende forståelse for modellernes virken, kan du prøve kræfter med udvidet adgang til hyperparametre og mere frihed i modellerne. \n'\
+                ' - Ekstrem - Upload Eget Datasæt: Find og tilpas et datasæt så det bliver egnet til at blive analyseret af modellen. Modellen har samme funktionalitet som under Avanceret.')
+    st.write('Forslag til forløb:') #GØR denne større 
+    #####NÅET HERTIL
     # Add a download link for guidance PDF in the sidebar
     
     st.sidebar.write("") # Add vertical space above button
-
-    #Add Download Buttons for PDFS
-
-    # Download button for PDF HUSPRISER
-    if os.path.exists(DATA_PATHS['VejledningHUSPRISER']):
-        try:
-            with open(DATA_PATHS['VejledningHUSPRISER'], "rb") as pdf_file:
-                pdf_bytes = pdf_file.read()
-            
-            st.sidebar.download_button(
-                label="📥 Hent vejledning til Huspriser",
-                data=pdf_bytes,
-                file_name="vejledningHUSPRISER.pdf",
-                mime="application/pdf"
-            )
-        except Exception as e:
-            st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
-    else:
-        st.sidebar.warning("⚠️ Vejledning PDF ikke fundet.")
-
-    # Download button for PDF DIABETES
-    if os.path.exists(DATA_PATHS['VejledningDIABETES']):
-        try:
-            with open(DATA_PATHS['VejledningDIABETES'], "rb") as pdf_file:
-                pdf_bytes = pdf_file.read()
-            
-            st.sidebar.download_button(
-                label="📥 Hent vejledning til Diabetes",
-                data=pdf_bytes,
-                file_name="vejledningDIABETES.pdf",
-                mime="application/pdf"
-            )
-        except Exception as e:
-            st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
-    else:
-        st.sidebar.warning("⚠️ Vejledning PDF ikke fundet.")
-    
-    # Download button for PDF GLETSJER
-    if os.path.exists(DATA_PATHS['VejledningGLETSJER']):
-        try:
-            with open(DATA_PATHS['VejledningGLETSJER'], "rb") as pdf_file:
-                pdf_bytes = pdf_file.read()
-            
-            st.sidebar.download_button(
-                label="📥 Hent vejledning til Gletsjer",
-                data=pdf_bytes,
-                file_name="vejledningGLETSJER.pdf",
-                mime="application/pdf"
-            )
-        except Exception as e:
-            st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
-    else:
-        st.sidebar.warning("⚠️ Vejledning PDF ikke fundet.")
-
-    # Download button for PDF PARTIKEL
-    if os.path.exists(DATA_PATHS['VejledningPARTIKEL']):
-        try:
-            with open(DATA_PATHS['VejledningPARTIKEL'], "rb") as pdf_file:
-                pdf_bytes = pdf_file.read()
-            
-            st.sidebar.download_button(
-                label="📥 Hent vejledning til Partikel",
-                data=pdf_bytes,
-                file_name="vejledningPARTIKEL.pdf",
-                mime="application/pdf"
-            )
-        except Exception as e:
-            st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
-    else:
-        st.sidebar.warning("⚠️ Vejledning PDF ikke fundet.")
 
     st.markdown("---")
     #st.write("**Navigation:** Brug sidepanelet til venstre for at navigere mellem de forskellige sider.")
