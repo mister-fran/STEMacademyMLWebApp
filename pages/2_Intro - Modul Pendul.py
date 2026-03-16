@@ -66,6 +66,23 @@ def main():
             st.sidebar.error(f"Fejl ved indlæsning af PDF: {e}")
     else:
         st.sidebar.warning("Vejledning PDF ikke fundet.")
+    
+    #Download template for xl
+    if os.path.exists(DATA_PATHS['TemplatePENDUL']):
+        try:
+            with open(DATA_PATHS['TemplatePENDUL'], "rb") as excel_file:
+                excel_bytes = excel_file.read()
+            
+            st.sidebar.download_button(
+                label="Hent skabelon til datatagning til Modul Pendul",
+                data=excel_bytes,
+                file_name="Penduldata_template.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+        except Exception as e:
+            st.sidebar.error(f"Fejl ved indlæsning af Excel-fil: {e}")
+    else:
+        st.sidebar.warning("Fil ikke fundet.")
     # Pendul
 
     ## Data

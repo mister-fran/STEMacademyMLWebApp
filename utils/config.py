@@ -27,7 +27,8 @@ DATA_PATHS = {
     "VejledningDIABETES": os.path.join("data", "VejledningDIABETES.pdf"),
     "VejledningGLETSJER": os.path.join("data", "VejledningGLETSJER.pdf"),
     "VejledningPARTIKEL": os.path.join("data", "VejledningPARTIKEL.pdf"),
-    "VejledningPENDUL": os.path.join("data", "VejledningPENDUL.pdf")
+    "VejledningPENDUL": os.path.join("data", "VejledningPENDUL.pdf"),
+    "TemplatePENDUL": os.path.join("data", "Penduldata_template.xlsx")
 }
 
 # ML Model settings
