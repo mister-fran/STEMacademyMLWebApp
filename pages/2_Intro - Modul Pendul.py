@@ -14,9 +14,12 @@ import scipy as scipy
 
 # Plotting
 import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
 
 # Sklearn: et librabry med en masse funtioner vi bruger i Machine Learning
 import sklearn as sklearn
+from sklearn.inspection import PartialDependenceDisplay
+from sklearn.pipeline import Pipeline
 
 # LightGBM - pakke til at køre decision tree
 import lightgbm as lgb
@@ -366,5 +369,50 @@ def main():
                 plt.legend()
                 st.pyplot(plt.gcf(), use_container_width=True)
 
+        if "PDP" not in st.session_state:
+                st.session_state.PDP = None
+                
+        # Create the button
+        if st.button("Generer Partial Dependence Plot"):
+    
+            # 1. Saml den allerede trænede scaler og model i en pipeline
+            pipeline = Pipeline([
+                ('scaler', scaler),
+                ('mlp', mlp)
+            ])
+            features_to_plot = list(range(len(input_variabler)))
+            # 2. Generer Partial Dependence Plots
+            fig, ax = plt.subplots(figsize=(12, 8))
+            display = PartialDependenceDisplay.from_estimator(
+                estimator=pipeline,       
+                X=data_test,          
+                features=features_to_plot,
+                feature_names=input_variabler,
+                kind="both",
+                grid_resolution=50,
+                ax=ax,
+                subsample=1000,
+                pd_line_kw={"color":"tab:blue","linestyle":"-","linewidth":2,"label":"."},
+                ice_lines_kw = {"color": "lightblue", "alpha": 0.12, "linewidth": 0.5,"label":"."}
+            )
+            for ax in display.axes_.flat:
+                # ax kan være None hvis grid'et ikke er fuldt udfyldt (f.eks. 5 plots i et 2x3 grid)
+                if ax is not None:
+                    legend = ax.get_legend()
+                    if legend is not None:
+                        legend.remove()
+            # Create custom legend items
+            ice_line = mlines.Line2D([], [], color='tab:blue', alpha=1,linewidth=2, label='Individuelle Partial Dependence')
+            pdp_line = mlines.Line2D([], [], color='lightblue',alpha=1, linewidth=1, label='Gennemsnitlig Partial Dependence')
+            # Place a single legend on the figure itself
+            fig.legend(handles=[ice_line, pdp_line], loc='lower right', bbox_to_anchor=(0.98, 0.1), ncol=1, fontsize=12)
+            # Adjust layout so subplots don't overlap with super title and bottom legend isn't cut off
+            fig.subplots_adjust(top=0.92, bottom=0.12, wspace=0.3, hspace=0.4)
+
+            st.session_state.PDP = fig
+            
+        if st.session_state.PDP is not None:
+            st.pyplot(st.session_state.PDP, use_container_width=True)
+        
 if __name__ == "__main__":
     main()
