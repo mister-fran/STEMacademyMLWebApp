@@ -23,7 +23,9 @@ def main():
             ' - Avanceret: Hvis du allerede har en grundlæggende forståelse for modellernes virken, kan du prøve kræfter med udvidet adgang til hyperparametre og mere frihed i modellerne. \n'\
                 ' - Ekstrem - Upload Eget Datasæt: Find og tilpas et datasæt så det bliver egnet til at blive analyseret af modellen. Modellen har samme funktionalitet som under Avanceret.')
     st.write('Forslag til forløb:') #GØR denne større 
-    #####NÅET HERTIL
+    
+    st.image(DATA_PATHS["ForsideBILLEDE"], caption="Kilde: Troels Petersen, Applied Machine Learning", use_container_width=True)
+
     # Add a download link for guidance PDF in the sidebar
     
     st.sidebar.write("") # Add vertical space above button

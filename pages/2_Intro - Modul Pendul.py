@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 #Load data from dataloader
-from utils.data_loader import load_pendul_dataset
+from utils.data_loader import load_pendul_dataset_short, load_pendul_dataset_long
+
 import os
 from utils.config import DATA_PATHS
 #from utils.plots import plotting, plotting_glet, plotting_partikel, Plotting_class, plotting_reg_own, plotting_class_own
@@ -44,7 +45,8 @@ def main():
     # Add description
     st.write('Hvis du aldrig har arbejdet med Machine Learning før er du havnet det rigtige sted. ' \
     'Modul Pendul er en basal introdution til det neurale netværk forklaret i kontekst af det simple pendul. ' \
-    'Læs vejledningen (som findes i venstre side) sideløbende med denne side.')
+    'Læs vejledningen (som findes i venstre side) sideløbende med denne side. '\
+    'Hvis du aldrig har arbejdet med ML før, er det en god ide at se [denne video](https://www.youtube.com/watch?v=CqOfi41LfDw) sideløbende med vejledningen for at få et bedre overblik over hvordan ML virker.')
     st.write("God arbejdslyst.")    
 
     
@@ -86,11 +88,18 @@ def main():
     # Pendul
 
     ## Data
-    st.subheader("Inspicer dataen")
-    st.write("Først vil vi gerne undersøge hvilken data vi har med at gøre. ")
+    st.subheader("Træningsdata")
+    st.write("Nedenfor er visualiseret det data vi bruger til at træne vores model på."\
+             " Desto mere og bedre data vi har, desto bedre bliver modellen til at forudsige perioder på baggrund af de øvrige parametre. ")
+    st.write("Du kan vælge mellem to datasæt. Forskellen på dem er i hvilket interval værdierne for længden ligger i. Dette betyder modellen kun er god til at forudsige perioder for penduler med en længde inden for det givne interval. For intervallet (0.2m - 1.0m) er modellen f.eks. dårlig til at forudsige svingningstid for penduler med længde >1m og vice versa.")
+    
+    st.selectbox("Vælg datasæt", options=[ "L_measured i intervallet (0.2m - 2m)","L_measured i intervallet: (0.2m - 1m)"], key="datasæt_pendul")
 
     #Load data
-    data = load_pendul_dataset()
+    if st.session_state.datasæt_pendul == "L_measured i intervallet: (0.2m - 1m)":
+        data = load_pendul_dataset_short()
+    elif st.session_state.datasæt_pendul == "L_measured i intervallet (0.2m - 2m)":
+        data = load_pendul_dataset_long()
 
     #Vis data
     st.dataframe(data, height=200, use_container_width=True)
@@ -113,26 +122,22 @@ def main():
     replace=False
     )
 
-    # Tilrettelæg til brug i model
-    st.write("""Vi splitter datasættet i et træningssæt og et testsæt.
-    Træningssættet bruges til at træne modellen, hvor modellen får salgspriserne at vide.
-    Testsættet bruges til at give den trænede model data uden salgspriser, som den så skal forudsige, men hvor vi stadig kender svaret.""")
+    # Tilrettelæg data til brug i model    
     data_træning, data_test, sand_periode_træning, sand_periode_test = \
         sklearn.model_selection.train_test_split(input_data_justeret, truth_data_justeret, test_size=0.25, random_state=42)
-    ## Det neurale netværk
-
-    st.write("For at data kan bruges i det neurale netværk er vi nødt til at skalere det således at det ligger fordelt omkring 0 (der er ~lige mange værdier over og under 0) og dets spredning er 1 (værdierne ligger tæt på 0).")
+    #Skaler
     scaler = sklearn.preprocessing.StandardScaler()
     data_træning_scaled = scaler.fit_transform(data_træning)
     data_test_scaled = scaler.transform(data_test)
-
+    
+    ## Det neurale netværk
     st.write("I et neuralt netværk kan vi justere på hvor mange lag og hvor mange noder hvert lag skal have:")
-    layer_one   = st.slider("Antal noder i lag 1", min_value=1, max_value=128, value=2, step=1)             
-    layer_two   = st.slider("Antal noder i lag 2", min_value=1, max_value=128, value=2, step=1)            
-    layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=128, value=2, step=1)
-    layer_four  = st.slider("Antal noder i lag 4", min_value=1, max_value=128, value=2, step=1)
-    layer_five  = st.slider("Antal noder i lag 5", min_value=1, max_value=128, value=2, step=1)
-    layer_six   = st.slider("Antal noder i lag 6", min_value=1, max_value=128, value=2, step=1)
+    layer_one   = st.slider("Antal noder i lag 1", min_value=1, max_value=32, value=2, step=1)             
+    layer_two   = st.slider("Antal noder i lag 2", min_value=1, max_value=32, value=2, step=1)            
+    layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=32, value=2, step=1)
+    layer_four  = st.slider("Antal noder i lag 4", min_value=1, max_value=32, value=2, step=1)
+    layer_five  = st.slider("Antal noder i lag 5", min_value=1, max_value=32, value=2, step=1)
+    layer_six   = st.slider("Antal noder i lag 6", min_value=1, max_value=32, value=2, step=1)
     st.write("Nedenfor træner vi modellen. Vi kan også regne ud hvor mange parametre modellen bruger.")
     st.write("Herefter plotter vi for at se hvor godt modellen klarer sig.")
     # Her definerer og træner vi modellen

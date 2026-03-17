@@ -23,12 +23,15 @@ DATA_PATHS = {
     "gletsjer": os.path.join("data", "gletsjer_data_rounded.csv"),
     "partikel": os.path.join("data", "partikel_data_50000_rounded.csv"),
     "pendul1": os.path.join("data", "pendulum_data_wide_2.csv"),
+    "pendul_short": os.path.join("data", "pendulum_data_short.csv"), #These two need to be constructed
+    "pendul_long": os.path.join("data", "pendulum_data_long.csv"),
     "VejledningHUSPRISER": os.path.join("data", "VejledningHUSPRISER.pdf"),
     "VejledningDIABETES": os.path.join("data", "VejledningDIABETES.pdf"),
     "VejledningGLETSJER": os.path.join("data", "VejledningGLETSJER.pdf"),
     "VejledningPARTIKEL": os.path.join("data", "VejledningPARTIKEL.pdf"),
     "VejledningPENDUL": os.path.join("data", "VejledningPENDUL.pdf"),
-    "TemplatePENDUL": os.path.join("data", "Penduldata_template.xlsx")
+    "TemplatePENDUL": os.path.join("data", "Penduldata_template.xlsx"),
+    "ForsideBILLEDE": os.path.join("data", "forsidebillede.PNG")
 }
 
 # ML Model settings

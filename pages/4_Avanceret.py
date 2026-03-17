@@ -46,8 +46,12 @@ def main():
     # Add description
     st.write('Hvis du allerede føler dig fortrolig med hvordan Machine Learning modeller virker kan du her udfordre din viden '\
     'og prøve kræfter med udvidet adgang til hyperparametre for analysen af datasættene om hhv. huspriser, diabetes, gletsjerdybder og partikler. '\
-    'Brug vejledningen (som findes i venstre side) sideløbende med denne side.')
-    st.write("Prøv dig frem og husk at være kreativ!")    
+    'Brug vejledningen (som findes i venstre side) sideløbende med denne hjemmeside.')
+    st.write("Prøv dig frem og husk at være kreativ!") 
+    st.write("Hjælp, jeg er gået i stå! For at blive fortrolig med Machine Learning skal man hoppe ud på dbt vand og selv prøve kræfterne med modellerne/begreberne."\
+        " En god fremgangsmåde i denne del er at ændre en/få parametre af gangen og undersøge hvordan dette påvirker modellen/resultaterne. Det er vigtigt at stille det underliggende spørgsmål: "\
+            "Hvordan fører min ændring til den ændring jeg ser i resultaterne. En stor del af at arbejde med ML/kode er at bbruge googlesøgninger som et værktøj. "\
+                "Hvis du ikke kender til begreberne nævnt på hjemmesiden er et godt sted at søge hjælp referencerne for Scikit Learn pakken. Dvs prøv gogglesøgningen: 'boosting rounds scikit learn'. Alternativt, brug en AI model til at slå begreberne op. Den kan godt give intuitive forklaringer af disse. ")   
 
     # Add a download link for guidance PDF in the sidebar
     #pdf_path = 'data/vejledning.pdf'  # Put your PDF file here
@@ -93,7 +97,7 @@ def main():
     # Content based on dataset - Standard level
     if dataset == "Gletsjer":
         #HER BEGYNDER VORES .ipynb
-        st.subheader("Avanceret Niveau - Gletsjer")
+        st.subheader("Gletsjer")
         st.write("Nedenfor skal du hjælpe gletsjervidenskabsfakultetet med at udvikle deres ML model til at bestemme dybden af gletsjere. På denne hjemmeside behøver vi ikke importere nogen pakker da det er tilrettelagt således at man skal kunne lege med ML-modellerne uden at skulle bekymre sig om koden bag dem.")
 
         #Inspicer dataen
@@ -277,7 +281,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
     #Partikel
     elif dataset == "Partikel":
         #HER BEGYNDER VORES .ipynb
-        st.subheader("Avanceret Niveau - Partikel")
+        st.subheader("Partikel")
         st.write("Som nævnt, er du blevet udnævnt personligt til at klassificere elektroner på CERN. På denne hjemmeside behøver vi ikke importere nogen pakker da det er tilrettelagt således at man skal kunne lege med ML-modellerne uden at skulle bekymre sig om koden bag dem.")
 
         #Inspicer dataen

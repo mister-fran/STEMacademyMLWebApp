@@ -30,3 +30,13 @@ def load_pendul_dataset():
     """Load pendul dataset"""
     return pd.read_csv(DATA_PATHS['pendul1'])
 
+@st.cache_data
+def load_pendul_dataset_short():
+    """Load pendul dataset"""
+    return pd.read_csv(DATA_PATHS['pendul_short'])
+
+@st.cache_data
+def load_pendul_dataset_long():
+    """Load pendul dataset"""
+    return pd.read_csv(DATA_PATHS['pendul_long'])
+
