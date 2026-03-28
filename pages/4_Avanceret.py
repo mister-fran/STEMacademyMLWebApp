@@ -232,12 +232,19 @@ Testsættet bruges til at give den trænede model data uden dybder, som den så 
         st.write("I et neuralt netværk kan vi justere på hvor mange lag og hvor mange noder hvert lag skal have:")
 
         #Make six slider, one for each layer. that is six layers in total. sliders decide amount of nodes per layer
-        layer_one = st.slider("Antal noder i lag 1", min_value=1, max_value=32, value=32, step=1)
-        layer_two = st.slider("Antal noder i lag 2", min_value=1, max_value=32, value=16, step=1)
-        layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=32, value=8, step=1)
-        layer_four = st.slider("Antal noder i lag 4", min_value=1, max_value=32, value=4, step=1)
-        layer_five = st.slider("Antal noder i lag 5", min_value=1, max_value=32, value=2, step=1)
-        layer_six = st.slider("Antal noder i lag 6", min_value=1, max_value=32, value=2, step=1)
+        st.write('Fjern et lag fra modellen ved at sætte det til 0.')
+        layer_one   = st.slider("Antal noder i lag 1", min_value=0, max_value=32, value=4, step=1)             
+        layer_two   = st.slider("Antal noder i lag 2", min_value=0, max_value=32, value=0, step=1)            
+        layer_three = st.slider("Antal noder i lag 3", min_value=0, max_value=32, value=0, step=1)
+        layer_four  = st.slider("Antal noder i lag 4", min_value=0, max_value=32, value=0, step=1)
+        layer_five  = st.slider("Antal noder i lag 5", min_value=0, max_value=32, value=0, step=1)
+        layer_six   = st.slider("Antal noder i lag 6", min_value=0, max_value=32, value=0, step=1)
+
+        hidden_layer_sizes = (layer_one, layer_two, layer_three, layer_four, layer_five, layer_six)
+        #choose the entries of hidden_layer_sizes that are !=0
+        hidden_layer_sizes = tuple(l for l in hidden_layer_sizes if l > 0)
+
+        st.markdown("**VALGT ARKITEKTUR:** " + str(hidden_layer_sizes))    
 
         st.subheader('Advanced - Hyperparametre')
         activation = st.selectbox("Hvilken activation function skal vi bruge?", options=['relu', 'tanh', 'logistic'], index=0)
@@ -250,7 +257,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
                  Det kan godt tage op til ~et minut at køre denne model.""")
         if st.button("Kør Neuralt Netværk"):
             # Her definerer og træner vi modellen
-            mlp = sklearn.neural_network.MLPRegressor(hidden_layer_sizes=(layer_one, layer_two, layer_three, layer_four, layer_five, layer_six), 
+            mlp = sklearn.neural_network.MLPRegressor(hidden_layer_sizes=hidden_layer_sizes, 
             max_iter=max_iter, activation=activation,learning_rate=learning_rate_nn, alpha = alpha, early_stopping=early_stopping_nn, random_state=42)
             mlp.fit(data_træning, sand_dybde_træning)
             # Her giver vi den trænede model test data som den ikke har set før, og beder om at forudsige dybden
@@ -415,12 +422,19 @@ Testsættet bruges til at give den trænede model ny data (som den ikke kender s
         st.write("I et neuralt netværk kan vi justere på hvor mange lag og hvor mange noder hvert lag skal have:")
 
         #Make six slider, one for each layer. that is six layers in total. sliders decide amount of nodes per layer
-        layer_one = st.slider("Antal noder i lag 1", min_value=1, max_value=32, value=32, step=1)
-        layer_two = st.slider("Antal noder i lag 2", min_value=1, max_value=32, value=16, step=1)
-        layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=32, value=8, step=1)
-        layer_four = st.slider("Antal noder i lag 4", min_value=1, max_value=32, value=4, step=1)
-        layer_five = st.slider("Antal noder i lag 5", min_value=1, max_value=32, value=2, step=1)
-        layer_six = st.slider("Antal noder i lag 6", min_value=1, max_value=32, value=2, step=1)
+        st.write('Fjern et lag fra modellen ved at sætte det til 0.')
+        layer_one   = st.slider("Antal noder i lag 1", min_value=0, max_value=32, value=4, step=1)             
+        layer_two   = st.slider("Antal noder i lag 2", min_value=0, max_value=32, value=0, step=1)            
+        layer_three = st.slider("Antal noder i lag 3", min_value=0, max_value=32, value=0, step=1)
+        layer_four  = st.slider("Antal noder i lag 4", min_value=0, max_value=32, value=0, step=1)
+        layer_five  = st.slider("Antal noder i lag 5", min_value=0, max_value=32, value=0, step=1)
+        layer_six   = st.slider("Antal noder i lag 6", min_value=0, max_value=32, value=0, step=1)
+
+        hidden_layer_sizes = (layer_one, layer_two, layer_three, layer_four, layer_five, layer_six)
+        #choose the entries of hidden_layer_sizes that are !=0
+        hidden_layer_sizes = tuple(l for l in hidden_layer_sizes if l > 0)
+
+        st.markdown("**VALGT ARKITEKTUR:** " + str(hidden_layer_sizes))    
 
         st.subheader('Advanced - Hyperparametre')
         activation = st.selectbox("Hvilken activation function skal vi bruge?", options=['relu', 'tanh', 'logistic'], index=0)
@@ -434,7 +448,7 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
                  Det kan godt tage op til ~et minut at køre denne model.""")
         if st.button("Kør Neuralt Netværk"):
             # Her definerer og træner vi modellen
-            mlp = sklearn.neural_network.MLPClassifier(hidden_layer_sizes=(layer_one, layer_two, layer_three, layer_four, layer_five, layer_six), 
+            mlp = sklearn.neural_network.MLPClassifier(hidden_layer_sizes=hidden_layer_sizes, 
             max_iter=max_iter, activation=activation, learning_rate=learning_rate_nn, alpha=alpha, early_stopping=early_stopping_nn, random_state=42)
             mlp.fit(data_train_transformed, label_train) 
 

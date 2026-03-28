@@ -40,7 +40,7 @@ if st.session_state.get("_active_page") != PAGE_ID:
     st.rerun()
     
 def main():
-    st.title("Modul Pendul - Pendulets periode med ML")
+    st.header("Modul Pendul - Pendulets periode med ML")
 
     # Load datasets using cached functions
     #DSPendul = load_pendul_dataset()
@@ -88,10 +88,29 @@ def main():
             st.sidebar.error(f"Fejl ved indlæsning af Excel-fil: {e}")
     else:
         st.sidebar.warning("Fil ikke fundet.")
+
+    #Download for Example dataset
+    if os.path.exists(DATA_PATHS['EksempelPENDUL']):
+        try:
+            with open(DATA_PATHS['EksempelPENDUL'], "rb") as excel_file:
+                excel_bytes = excel_file.read()
+            
+            st.sidebar.download_button(
+                label="Hent Eksempel på datasæt til Modul Pendul",
+                data=excel_bytes,
+                file_name="Eksempel_Data.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+        except Exception as e:
+            st.sidebar.error(f"Fejl ved indlæsning af Excel-fil: {e}")
+    else:
+        st.sidebar.warning("Fil ikke fundet.")
     # Pendul
 
     ## Data
-    st.subheader("Træningsdata")
+    st.markdown("---")
+    st.markdown("##### Modul 1")
+    st.markdown("**Træningsdata**")
     st.write("Nedenfor er visualiseret det data vi bruger til at træne vores model på."\
              " Desto mere og bedre data vi har, desto bedre bliver modellen til at forudsige perioder på baggrund af de øvrige parametre. ")
     st.write("Du kan vælge mellem to datasæt. Forskellen på dem er i hvilket interval værdierne for længden ligger i. Dette betyder modellen kun er god til at forudsige perioder for penduler med en længde inden for det givne interval. For intervallet (0.2m - 1.0m) er modellen f.eks. dårlig til at forudsige svingningstid for penduler med længde >1m og vice versa.")
@@ -113,10 +132,11 @@ def main():
     input_data = data[input_variabler].to_numpy()
     truth_data = data['Period'].to_numpy()
 
+    st.markdown("**Træning**")
     #Andel af data
     st.write("Nedenfor kan du vælge hvor stor en andel af data du vil bruge til at træne modellen.")
     # Vælg hvor stor andel. Tallet skal være mellem 0 og 1.0.
-    andel_af_data = st.slider("Andel af data til træning", min_value=0.01, max_value=1.0, value=1.0, step=0.01)
+    andel_af_data = st.slider("Andel af data til træning", min_value=0.01, max_value=1.0, value=0.05, step=0.01)
     #Vi omdefinerer vores input og truth data til kun at indeholde en del af dataene.
     input_data_justeret, truth_data_justeret = sklearn.utils.resample(
     input_data, truth_data, 
@@ -135,16 +155,24 @@ def main():
     
     ## Det neurale netværk
     st.write("I et neuralt netværk kan vi justere på hvor mange lag og hvor mange noder hvert lag skal have:")
-    layer_one   = st.slider("Antal noder i lag 1", min_value=1, max_value=32, value=2, step=1)             
-    layer_two   = st.slider("Antal noder i lag 2", min_value=1, max_value=32, value=2, step=1)            
-    layer_three = st.slider("Antal noder i lag 3", min_value=1, max_value=32, value=2, step=1)
-    layer_four  = st.slider("Antal noder i lag 4", min_value=1, max_value=32, value=2, step=1)
-    layer_five  = st.slider("Antal noder i lag 5", min_value=1, max_value=32, value=2, step=1)
-    layer_six   = st.slider("Antal noder i lag 6", min_value=1, max_value=32, value=2, step=1)
-    st.write("Nedenfor træner vi modellen. Vi kan også regne ud hvor mange parametre modellen bruger.")
-    st.write("Herefter plotter vi for at se hvor godt modellen klarer sig.")
-    # Her definerer og træner vi modellen
+    
+    st.write('Fjern et lag fra modellen ved at sætte det til 0.')
+    layer_one   = st.slider("Antal noder i lag 1", min_value=0, max_value=32, value=4, step=1)             
+    layer_two   = st.slider("Antal noder i lag 2", min_value=0, max_value=32, value=0, step=1)            
+    layer_three = st.slider("Antal noder i lag 3", min_value=0, max_value=32, value=0, step=1)
+    layer_four  = st.slider("Antal noder i lag 4", min_value=0, max_value=32, value=0, step=1)
+    layer_five  = st.slider("Antal noder i lag 5", min_value=0, max_value=32, value=0, step=1)
+    layer_six   = st.slider("Antal noder i lag 6", min_value=0, max_value=32, value=0, step=1)
 
+    hidden_layer_sizes = (layer_one, layer_two, layer_three, layer_four, layer_five, layer_six)
+    #choose the entries of hidden_layer_sizes that are !=0
+    hidden_layer_sizes = tuple(l for l in hidden_layer_sizes if l > 0)
+
+    st.markdown("**VALGT ARKITEKTUR:** " + str(hidden_layer_sizes))    
+    
+    
+    st.write("Nedenfor træner vi modellen. Der vises hvor mange parametre der er i modellen, samt antallet af interationer den har trænet over. Herefter plotter vi for at se hvor godt modellen klarer sig.")
+    # Her definerer og træner vi modellen
     if "mlp" not in st.session_state:
         st.session_state.mlp = None
         st.session_state.scaler = None
@@ -153,6 +181,9 @@ def main():
     def plotting(sand, forudsagt):
             fig, ax = plt.subplots(figsize=(5, 5))
             ax.scatter(sand, forudsagt, alpha=0.5)
+            #Add MSE as label
+            mse = sklearn.metrics.mean_squared_error(sand, forudsagt)
+            ax.text(0.05, 0.95, f'MSE: {mse:.3f}', transform=ax.transAxes, verticalalignment='top')
             ax.plot([min(sand), max(sand)], [min(sand), max(sand)], color='red', linestyle='--')
             ax.set_xlabel('Sand værdi')
             ax.set_ylabel('Forudsagt værdi')
@@ -160,6 +191,10 @@ def main():
             ax.grid()
             fig.tight_layout()
             return fig
+
+    #Add plot of loss vs iterations
+    
+
 
     # if st.button("Kør Neuralt Netværk"):
     #     mlp = sklearn.neural_network.MLPRegressor(hidden_layer_sizes=(layer_one, layer_two, layer_three, layer_four, layer_five, layer_six), 
@@ -221,7 +256,7 @@ def main():
     # --- train button: ONLY trains + saves to session ---
     if st.button("Kør Neuralt Netværk"):
         mlp = sklearn.neural_network.MLPRegressor(
-            hidden_layer_sizes=(layer_one, layer_two, layer_three, layer_four, layer_five, layer_six),
+            hidden_layer_sizes=hidden_layer_sizes,
             max_iter=500, early_stopping=True, random_state=42
         )
         mlp.fit(data_træning_scaled, sand_periode_træning)
@@ -256,9 +291,12 @@ def main():
 
         st.write(
             f"Antal parametre i NN: {ev['n_params']} -------- "
-            f"Antal Iterations: {ev['n_iter']} -------- "
-            f"Maximalt antal iterations: {ev['max_iter']}"
+            f"Antal Iterations: {ev['n_iter']}"
+            #f"Maximalt antal iterations: {ev['max_iter']}"
         )
+        #Print a message saying ive reached max iterations
+        if ev['n_iter'] >= ev['max_iter']:
+            st.warning("Modellen nåede det maksimale antal iterationer (500) før den konvergerede. Juster på modellens parametre for at se om det forbedrer træningen.")
 
         st.write("Evaluer modellens performance:")
         col1, col2 = st.columns(2)
@@ -280,20 +318,36 @@ def main():
             fig3.tight_layout()
             st.pyplot(fig3, use_container_width=True)
 
-        #Permutation Importance
-        fig2, ax2 = plt.subplots(figsize=(8, 4))
-        y = np.arange(len(ev["perm_vals"]))
-        ax2.barh(y, ev["perm_vals"])
-        ax2.set_yticks(y)
-        ax2.set_yticklabels(ev["perm_labels"])
-        ax2.set_xlabel("Increase in MSE (permutation)")
-        ax2.set_ylabel("Feature")
-        ax2.set_title("Permutation Importance")
-        ax2.invert_yaxis()
-        fig2.tight_layout()
-        st.pyplot(fig2, use_container_width=False)
+        col1, col2 = st.columns(2)
+        with col1:
+            # Indsæt Loss plot her:
+            fig_loss, ax_loss = plt.subplots(figsize=(5, 5))
+            ax_loss.plot(mlp.loss_curve_, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("MSE Loss")
+            ax_loss.set_title("MSE Loss vs Iterations")
+            ax_loss.grid(True)
+            st.pyplot(fig_loss, use_container_width=True)
+
+        with col2:
+            #Permutation Importance
+            fig2, ax2 = plt.subplots(figsize=(5, 5))
+            y = np.arange(len(ev["perm_vals"]))
+            ax2.barh(y, ev["perm_vals"])
+            ax2.set_yticks(y)
+            ax2.set_yticklabels(ev["perm_labels"])
+            ax2.set_xlabel("Increase in MSE (permutation)")
+            ax2.set_ylabel("Feature")
+            ax2.set_title("Permutation Importance")
+            ax2.invert_yaxis()
+            fig2.tight_layout()
+            st.pyplot(fig2, use_container_width=False)
 
         #Cellen tager excel-skabelonen som input.
+        st.markdown("---")
+        st.markdown("##### Udfør Modul 2 før du går videre")
+        st.markdown("---")
+        st.markdown("##### Modul 3")
 
         #Indsæt din egen fil nedenfor
         uploaded_file = st.file_uploader("Upload din egen Excel fil med data her", type=["xlsx"])
@@ -345,21 +399,25 @@ def main():
             mae_simple = np.mean(np.abs(T_simple - målt_periode))
             mae_komp = np.mean(np.abs(T_komp - målt_periode))
 
+            mse_model = np.mean((forudsagt_periode_egen - målt_periode)**2)
+            mse_simple = np.mean((T_simple - målt_periode)**2)
+            mse_komp = np.mean((T_komp - målt_periode)**2)
+            
             col1, col2 = st.columns([1.5,1])
             with col1:
                 #Plot
                 plt.figure(figsize=(6,6))
-                plt.scatter(målt_periode, forudsagt_periode_egen, alpha=0.5, label=f"Model (MAE={mae_model:.3f})", color='blue')
+                plt.scatter(målt_periode, forudsagt_periode_egen, alpha=0.5, label=f"Model (MSE={mse_model:.3f})", color='blue')
                 mn = float(np.min([målt_periode.min(), forudsagt_periode_egen.min(), T_simple.min(), T_komp.min()]))
                 mx = float(np.max([målt_periode.max(), forudsagt_periode_egen.max(), T_simple.max(), T_komp.max()]))
                 plt.ylabel("Forudsagt Periode")
 
                 if Vis_Beregning_med_small_angle_approximation == 1:
-                    plt.scatter(målt_periode, T_simple, alpha=0.5, label=f"T=2π√(L/g) (MAE={mae_simple:.3f})", color='orange')
+                    plt.scatter(målt_periode, T_simple, alpha=0.5, label=f"T=2π√(L/g) (MSE={mse_simple:.3f})", color='orange')
                     plt.ylabel("Forudsagt / Beregnet Periode")
 
                 if Vis_Beregning_med_Kompliceret_Ligning == 1:
-                    plt.scatter(målt_periode, T_komp, alpha=0.5, label=f"Kompliceret ligning (MAE={mae_komp:.3f})", color='green')
+                    plt.scatter(målt_periode, T_komp, alpha=0.5, label=f"Kompliceret ligning (MSE={mse_komp:.3f})", color='green')
                     plt.ylabel("Forudsagt / Beregnet Periode")
 
                 plt.plot([mn, mx], [mn, mx], "r--", label="Perfekt overensstemmelse")

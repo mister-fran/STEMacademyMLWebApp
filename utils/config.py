@@ -31,6 +31,7 @@ DATA_PATHS = {
     "VejledningPARTIKEL": os.path.join("data", "VejledningPARTIKEL.pdf"),
     "VejledningPENDUL": os.path.join("data", "VejledningPENDUL.pdf"),
     "TemplatePENDUL": os.path.join("data", "Penduldata_template.xlsx"),
+    "EksempelPENDUL": os.path.join("data","Eksempel_Datasæt.xlsx"),
     "ForsideBILLEDE": os.path.join("data", "forsidebillede.PNG")
 }
 
