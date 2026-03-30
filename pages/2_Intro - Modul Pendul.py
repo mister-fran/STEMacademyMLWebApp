@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 #Load data from dataloader
 from utils.data_loader import load_pendul_dataset_short, load_pendul_dataset_long
+from utils.plots import get_layer_sizes, draw_sklearn_mlp
 
 import os
 from utils.config import DATA_PATHS
@@ -342,6 +343,22 @@ def main():
             ax2.invert_yaxis()
             fig2.tight_layout()
             st.pyplot(fig2, use_container_width=False)
+
+        #Indfør modeltegning her
+        layer_sizes = get_layer_sizes(
+        mlp_model=mlp,
+        input_dim=len(input_variabler),
+        output_dim=1 # 1 fordi vi forudsiger en enkelt kontinuerlig værdi (Periode)
+    )
+        graph = draw_sklearn_mlp(
+            layer_sizes=layer_sizes,
+            feature_names=input_variabler,
+            class_names=["Periode"],
+            max_visible_nodes_per_layer=32,
+            format="png"
+        )
+
+        st.graphviz_chart(graph,height=400)
 
         #Cellen tager excel-skabelonen som input.
         st.markdown("---")

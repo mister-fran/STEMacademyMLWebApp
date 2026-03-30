@@ -16,7 +16,7 @@ def main():
     # Welcome message
     st.write('Velkommen til Machine Learning - STEM Academy!')
     st.write('Denne hjemmeside tilbyder et self-contained forløb til undervisning i Machine Learning (ML) i gymnasiet med udgangspunkt i forskellige udgangsniveauer; Hjemmesiden tilbyder forløb til elever der aldrig har set ML før, besidder basal viden, krævende elever der vil udfordre sig selv.')
-    st.write('Til klasser med tekniske kan dette eventuelt kombineres med undervisning i programmeringsproget python, enten lokalt eller på Google Colab, som er et, nemt at anvende, webinterface til at køre pythonkode. ')
+    st.write('Til klasser med tekniske linjefag kan dette eventuelt kombineres med undervisning i programmeringsproget python, enten lokalt eller på Google Colab, som er et, nemt at anvende, webinterface til at køre pythonkode. ')
     st.write('Forløbene er delt ind efter sværhedsgrader:')
     st.markdown(' - Intro - Modul Pendul: Forløb til dem der aldrig har arbejdet med ML før med udgangspunkt i det simple pendul. Udelukkende introduktion til regression med det neurale netværk. \n'\
         ' - Standard: Til dem der har basal viden indenfor ML. Forløbet er mere matematisk og går mere i dybden med de bagvedliggende koncepter. Fire datasæt tilbydes med afsæt i forskellige problemstillinger fra hverdagen/fysikken. Introduktion til både regression og classification med det neurale netværk og boosted decision trees. \n'\
