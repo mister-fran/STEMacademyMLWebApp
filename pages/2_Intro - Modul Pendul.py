@@ -116,7 +116,7 @@ def main():
              " Desto mere og bedre data vi har, desto bedre bliver modellen til at forudsige perioder på baggrund af de øvrige parametre. ")
     st.write("Du kan vælge mellem to datasæt. Forskellen på dem er i hvilket interval værdierne for længden ligger i. Dette betyder modellen kun er god til at forudsige perioder for penduler med en længde inden for det givne interval. For intervallet (0.2m - 1.0m) er modellen f.eks. dårlig til at forudsige svingningstid for penduler med længde >1m og vice versa.")
     
-    st.selectbox("Vælg datasæt", options=[ "L_measured i intervallet (0.2m - 2m)","L_measured i intervallet: (0.2m - 1m)"], key="datasæt_pendul")
+    st.selectbox("Vælg datasæt", options=["L_measured i intervallet: (0.2m - 1m)","L_measured i intervallet (0.2m - 2m)"], key="datasæt_pendul")
 
     #Load data
     if st.session_state.datasæt_pendul == "L_measured i intervallet: (0.2m - 1m)":
@@ -372,7 +372,7 @@ def main():
         if uploaded_file is None:
             st.info("Upload en Excel-fil for at lave forudsigelser.")
         else:
-            Vis_Beregning_med_small_angle_approximation = st.checkbox("Vis beregning med small angle approximation", value=False)
+            Vis_Beregning_med_small_angle_approximation = st.checkbox("Vis beregning med simpel ligning", value=False)
             Vis_Beregning_med_Kompliceret_Ligning = st.checkbox("Vis beregning med kompliceret ligning", value=False)
             df = pd.read_excel(dataset_path, skiprows=2, engine='openpyxl') #Understøtter nyere excelformater
 
@@ -444,9 +444,12 @@ def main():
                 plt.legend()
                 st.pyplot(plt.gcf(), use_container_width=True)
 
+        st.markdown("**Partial Dependence Plot**")
+        st.write("Se tilhørende forklaring og opgaver i vejledningen under afsnit 3.3.")
+
         if "PDP" not in st.session_state:
                 st.session_state.PDP = None
-                
+    
         # Create the button
         if st.button("Generer Partial Dependence Plot"):
     
@@ -477,8 +480,8 @@ def main():
                     if legend is not None:
                         legend.remove()
             # Create custom legend items
-            ice_line = mlines.Line2D([], [], color='tab:blue', alpha=1,linewidth=2, label='Individuelle Partial Dependence')
-            pdp_line = mlines.Line2D([], [], color='lightblue',alpha=1, linewidth=1, label='Gennemsnitlig Partial Dependence')
+            ice_line = mlines.Line2D([], [], color='tab:blue', alpha=1,linewidth=2, label='Gennemsnitlig Partial Dependence')
+            pdp_line = mlines.Line2D([], [], color='lightblue',alpha=1, linewidth=1, label='Individuelle Partial Dependence')
             # Place a single legend on the figure itself
             fig.legend(handles=[ice_line, pdp_line], loc='lower right', bbox_to_anchor=(0.98, 0.1), ncol=1, fontsize=12)
             # Adjust layout so subplots don't overlap with super title and bottom legend isn't cut off

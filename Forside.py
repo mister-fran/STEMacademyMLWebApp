@@ -22,9 +22,10 @@ def main():
         ' - Standard: Til dem der har basal viden indenfor ML. Forløbet er mere matematisk og går mere i dybden med de bagvedliggende koncepter. Fire datasæt tilbydes med afsæt i forskellige problemstillinger fra hverdagen/fysikken. Introduktion til både regression og classification med det neurale netværk og boosted decision trees. \n'\
             ' - Avanceret: Hvis du allerede har en grundlæggende forståelse for modellernes virken, kan du prøve kræfter med udvidet adgang til hyperparametre og mere frihed i modellerne. \n'\
                 ' - Ekstrem - Upload Eget Datasæt: Find og tilpas et datasæt så det bliver egnet til at blive analyseret af modellen. Modellen har samme funktionalitet som under Avanceret.')
-    st.write('Forslag til forløb:') #GØR denne større 
+    st.write('Overblik til forløb:') #GØR denne større 
     
-    st.image(DATA_PATHS["ForsideBILLEDE"], caption="Kilde: Troels Petersen, Applied Machine Learning", use_container_width=True)
+
+    st.image(DATA_PATHS["ForsideBILLEDE"], caption="", use_container_width=True)
 
     # Add a download link for guidance PDF in the sidebar
     

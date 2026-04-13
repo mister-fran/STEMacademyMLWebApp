@@ -48,7 +48,7 @@ def main():
     'og prøve kræfter med udvidet adgang til hyperparametre for analysen af datasættene om hhv. huspriser, diabetes, gletsjerdybder og partikler. '\
     'Brug vejledningen (som findes i venstre side) sideløbende med denne hjemmeside.')
     st.write("Prøv dig frem og husk at være kreativ!") 
-    st.write("Hjælp, jeg er gået i stå! For at blive fortrolig med Machine Learning skal man hoppe ud på dbt vand og selv prøve kræfterne med modellerne/begreberne."\
+    st.write("Hjælp, jeg er gået i stå! For at blive fortrolig med Machine Learning skal man hoppe ud på dybt vand og selv prøve kræfterne med modellerne/begreberne."\
         " En god fremgangsmåde i denne del er at ændre en/få parametre af gangen og undersøge hvordan dette påvirker modellen/resultaterne. Det er vigtigt at stille det underliggende spørgsmål: "\
             "Hvordan fører min ændring til den ændring jeg ser i resultaterne. En stor del af at arbejde med ML/kode er at bbruge googlesøgninger som et værktøj. "\
                 "Hvis du ikke kender til begreberne nævnt på hjemmesiden er et godt sted at søge hjælp referencerne for Scikit Learn pakken. Dvs prøv gogglesøgningen: 'boosting rounds scikit learn'. Alternativt, brug en AI model til at slå begreberne op. Den kan godt give intuitive forklaringer af disse. ")   
@@ -184,6 +184,25 @@ Testsættet bruges til at give den trænede model data uden dybder, som den så 
 
             forudsagt_dybde = gbm_test.predict(data_test, num_iteration=gbm_test.best_iteration_)
             plotting_glet(sand_dybde_test, forudsagt_dybde)
+            #Loss plot
+            fig_loss, ax_loss = plt.subplots(figsize=(8, 8))
+            
+            # LightGBM stores training history in evals_result_
+            eval_dict = gbm_test.evals_result_
+            # valid_0 holds the history for the first evaluation set provided
+            metric_key = list(eval_dict['valid_0'].keys())[0] 
+            loss_values = eval_dict['valid_0'][metric_key]
+            
+            ax_loss.plot(loss_values, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("MSE Loss")
+            ax_loss.set_title("MSE Loss vs Iterations")
+            ax_loss.grid(True)
+            
+            col1, col2, col3 = st.columns([1, 2, 1]) 
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+            
 
             res = sklearn.inspection.permutation_importance(gbm_test, data_test, sand_dybde_test, scoring="neg_mean_squared_error")
 
@@ -268,6 +287,16 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             n_params = sum(coef.size + intercept.size for coef, intercept in zip(mlp.coefs_, mlp.intercepts_))
             st.write(f"Antal parametre i NN: {n_params}")
             plotting_glet(sand_dybde_test, forudsagt_dybde)
+            fig_loss, ax_loss = plt.subplots(figsize=(5, 5))
+            ax_loss.plot(mlp.loss_curve_, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("MSE Loss")
+            ax_loss.set_title("MSE Loss vs Iterations")
+            ax_loss.grid(True)
+            col1, col2, col3 = st.columns([1,2,1])
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+
             st.subheader("Spørgsmål:")
             st.markdown("""
 - Prøv at justere på antal neuroner i det neurale netværk - Bliver modellen bedre dårligere/kører den hurtigere langsommere?
@@ -378,6 +407,25 @@ Testsættet bruges til at give den trænede model ny data (som den ikke kender s
             Forudsigelse = gbm_test.predict_proba(data_test, num_iteration=gbm_test.best_iteration_)[:,1]
             
             plotting_partikel(label_test, Forudsigelse)
+            #Loss plot
+            fig_loss, ax_loss = plt.subplots(figsize=(8, 8))
+            
+            # LightGBM stores training history in evals_result_
+            eval_dict = gbm_test.evals_result_
+            # valid_0 holds the history for the first evaluation set provided
+            metric_key = list(eval_dict['valid_0'].keys())[0] 
+            loss_values = eval_dict['valid_0'][metric_key]
+            
+            ax_loss.plot(loss_values, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("MSE Loss")
+            ax_loss.set_title("MSE Loss vs Iterations")
+            ax_loss.grid(True)
+            
+            col1, col2, col3 = st.columns([1, 2, 1]) 
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+            
 
 
             st.subheader("Evaluer resultat med AUC og histogram")
@@ -460,6 +508,16 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             n_params = sum(coef.size + intercept.size for coef, intercept in zip(mlp.coefs_, mlp.intercepts_))
             st.write(f"Antal parametre i NN: {n_params}")
             plotting_partikel(label_test, Forudsigelse)
+            fig_loss, ax_loss = plt.subplots(figsize=(5, 5))
+            ax_loss.plot(mlp.loss_curve_, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("MSE Loss")
+            ax_loss.set_title("MSE Loss vs Iterations")
+            ax_loss.grid(True)
+            col1, col2, col3 = st.columns([1,2,1])
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+
             st.subheader("Spørgsmål:")
             st.markdown("""
 - Sammenlign modellen med boosted decision tree ovenover. Hvilken algoritme klarer sig bedst?

@@ -206,6 +206,25 @@ Testsættet bruges til at give den trænede model data uden salgspriser, som den
             forudsagte_pris = gbm_test.predict(data_test, num_iteration=gbm_test.best_iteration_)
             plotting(sande_pris_test, forudsagte_pris)
 
+            #Loss plot
+            fig_loss, ax_loss = plt.subplots(figsize=(8, 8))
+            
+            # LightGBM stores training history in evals_result_
+            eval_dict = gbm_test.evals_result_
+            # valid_0 holds the history for the first evaluation set provided
+            metric_key = list(eval_dict['valid_0'].keys())[0] 
+            loss_values = eval_dict['valid_0'][metric_key]
+            
+            ax_loss.plot(loss_values, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("MSE Loss")
+            ax_loss.set_title("MSE Loss vs Iterations")
+            ax_loss.grid(True)
+            
+            col1, col2, col3 = st.columns([1, 2, 1]) 
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+            #
             res = sklearn.inspection.permutation_importance(gbm_test, data_test, sande_pris_test, scoring="neg_mean_squared_error")
         
             st.write("Nu vil vi gerne inspicere hvor god vores model er til at forudsige på data hvor den ikke kender prisen. Det venstre plot viser residualerne, altså sande værdi - forudsagte værdi. Det højre plot er sande værdi vs forudsagte værdi. Her er også konturer (de sorte linjer), der viser tætheden af punkterne.")
@@ -290,6 +309,16 @@ Herefter plotter vi for at se hvor godt modellen klarer sig. Denne kan tage op t
             n_params = sum(coef.size + intercept.size for coef, intercept in zip(mlp.coefs_, mlp.intercepts_))
             st.write(f"Antal parametre i NN: {n_params}")
             plotting(sande_pris_test, forudsagte_pris)
+            fig_loss, ax_loss = plt.subplots(figsize=(5, 5))
+            ax_loss.plot(mlp.loss_curve_, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("MSE Loss")
+            ax_loss.set_title("MSE Loss vs Iterations")
+            ax_loss.grid(True)
+            col1, col2, col3 = st.columns([1,2,1])
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+
             st.subheader("Spørgsmål:")
             st.markdown("""- Prøv at justere på antal neuroner i det neurale netværk - Kan du mindske usikkerheden?
 - Får du det samme antal parametre når du regner efter?
@@ -399,7 +428,25 @@ Testsættet bruges til at give den trænede model data uden at vide hvilke perso
             forudsagte_gruppe = (forudsagte_gruppe > beslutningsgrænse).astype(int)
 
             Plotting_class(sande_gruppe_test, forudsagte_score, forudsagte_gruppe, beslutningsgrænse)
-
+            #Loss plot
+            fig_loss, ax_loss = plt.subplots(figsize=(8, 8))
+            
+            # LightGBM stores training history in evals_result_
+            eval_dict = gbm_test.evals_result_
+            # valid_0 holds the history for the first evaluation set provided
+            metric_key = list(eval_dict['valid_0'].keys())[0] 
+            loss_values = eval_dict['valid_0'][metric_key]
+            
+            ax_loss.plot(loss_values, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("Log Loss")
+            ax_loss.set_title("Log Loss vs Iterations")
+            ax_loss.grid(True)
+            
+            col1, col2, col3 = st.columns([1, 2, 1]) 
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+            
 
             st.subheader("Evaluer resultat med AUC og histogram")
             st.write("Nu vil vi gerne inspicere hvor god vores model er til at forudsige om en person har diabetes eller ej. Det venstre plot viser en ROC-kurve dvs. hvor stor en andel af sande gæt har vi per andel af forkerte gæt. Jo tættere denne er på venstre øverste hjørne jo bedre. Selve scoren Area Under Curve (AUC) angiver bare hvor tæt på hjørnet grafen er. 1 angiver en perfekt score.")
@@ -492,6 +539,16 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             n_params = sum(coef.size + intercept.size for coef, intercept in zip(mlp.coefs_, mlp.intercepts_))
             st.write(f"Antal parametre i NN: {n_params}")
             Plotting_class(sande_gruppe_test, forudsagte_score, forudsagte_gruppe, beslutningsgrænse)
+            fig_loss, ax_loss = plt.subplots(figsize=(5, 5))
+            ax_loss.plot(mlp.loss_curve_, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("MSE Loss")
+            ax_loss.set_title("MSE Loss vs Iterations")
+            ax_loss.grid(True)
+            col1, col2, col3 = st.columns([1,2,1])
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+
             st.subheader("Spørgsmål:")
             st.markdown("""
 - Prøv at justere på antal neuroner i det neurale netværk - Kan du forbedre AUC og antallet at syge klassificeret som raske?
@@ -591,7 +648,26 @@ Testsættet bruges til at give den trænede model data uden dybder, som den så 
 
             forudsagt_dybde = gbm_test.predict(data_test, num_iteration=gbm_test.best_iteration_)
             plotting_glet(sand_dybde_test, forudsagt_dybde)
-
+            
+            #Loss plot
+            fig_loss, ax_loss = plt.subplots(figsize=(8, 8))
+            
+            # LightGBM stores training history in evals_result_
+            eval_dict = gbm_test.evals_result_
+            # valid_0 holds the history for the first evaluation set provided
+            metric_key = list(eval_dict['valid_0'].keys())[0] 
+            loss_values = eval_dict['valid_0'][metric_key]
+            
+            ax_loss.plot(loss_values, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("MSE Loss")
+            ax_loss.set_title("MSE Loss vs Iterations")
+            ax_loss.grid(True)
+            
+            col1, col2, col3 = st.columns([1, 2, 1]) 
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+            #
             res = sklearn.inspection.permutation_importance(gbm_test, data_test, sand_dybde_test, scoring="neg_mean_squared_error")
 
             st.write("Nu vil vi gerne inspicere hvor god vores model er til at forudsige på data hvor den ikke kender dybden i forvejen. Det venstre plot viser residualerne, altså (sand værdi - forudsagt værdi). Det højre plot er sand værdi vs forudsagt værdi. Her er også konturer (de sorte linjer), der viser tætheden af punkterne.")
@@ -670,6 +746,16 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             n_params = sum(coef.size + intercept.size for coef, intercept in zip(mlp.coefs_, mlp.intercepts_))
             st.write(f"Antal parametre i NN: {n_params}")
             plotting_glet(sand_dybde_test, forudsagt_dybde)
+            fig_loss, ax_loss = plt.subplots(figsize=(5, 5))
+            ax_loss.plot(mlp.loss_curve_, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("MSE Loss")
+            ax_loss.set_title("MSE Loss vs Iterations")
+            ax_loss.grid(True)
+            col1, col2, col3 = st.columns([1,2,1])
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+
             st.subheader("Spørgsmål:")
             st.markdown("""
 - Prøv at justere på antal neuroner i det neurale netværk - Bliver modellen bedre dårligere/kører den hurtigere langsommere?
@@ -761,7 +847,25 @@ Testsættet bruges til at give den trænede model ny data (som den ikke kender s
             Forudsigelse = gbm_test.predict_proba(data_test, num_iteration=gbm_test.best_iteration_)[:,1]
             
             plotting_partikel(label_test, Forudsigelse)
-
+            #Loss plot
+            fig_loss, ax_loss = plt.subplots(figsize=(8, 8))
+            
+            # LightGBM stores training history in evals_result_
+            eval_dict = gbm_test.evals_result_
+            # valid_0 holds the history for the first evaluation set provided
+            metric_key = list(eval_dict['valid_0'].keys())[0] 
+            loss_values = eval_dict['valid_0'][metric_key]
+            
+            ax_loss.plot(loss_values, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("Log Loss")
+            ax_loss.set_title("Log Loss vs Iterations")
+            ax_loss.grid(True)
+            
+            col1, col2, col3 = st.columns([1, 2, 1]) 
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+            
 
             st.subheader("Evaluer resultat med AUC og histogram")
             st.write("Nu vil vi gerne inspicere hvor god vores model er til at forusige på data hvor den ikke ved om data tilsvarer en elektron eller ej. Det venstre plot viser en ROC-kurve dvs. hvor stor en andel af sande gæt har vi per andel af forkerte gæt. Jo tættere denne er på venstre øverste hjørne jo bedre. Dvs. når raten af forkerte gæt er 0.1 er raten af korrekte gæt allrede omkring 0.9.")
@@ -837,6 +941,16 @@ Herefter plotter vi for at se hvor godt modellen klarer sig.
             n_params = sum(coef.size + intercept.size for coef, intercept in zip(mlp.coefs_, mlp.intercepts_))
             st.write(f"Antal parametre i NN: {n_params}")
             plotting_partikel(label_test, Forudsigelse)
+            fig_loss, ax_loss = plt.subplots(figsize=(5, 5))
+            ax_loss.plot(mlp.loss_curve_, color='tab:blue', linewidth=2)
+            ax_loss.set_xlabel("Iterations")
+            ax_loss.set_ylabel("MSE Loss")
+            ax_loss.set_title("MSE Loss vs Iterations")
+            ax_loss.grid(True)
+            col1, col2, col3 = st.columns([1,2,1])
+            with col2:
+                st.pyplot(fig_loss, use_container_width=True)
+
             st.subheader("Spørgsmål:")
             st.markdown("""
 - Sammenlign modellen med boosted decision tree ovenover. Hvilken algoritme klarer sig bedst?
