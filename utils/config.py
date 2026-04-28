@@ -32,7 +32,7 @@ DATA_PATHS = {
     "VejledningPENDUL": os.path.join("data", "VejledningPENDUL.pdf"),
     "TemplatePENDUL": os.path.join("data", "Penduldata_template.xlsx"),
     "EksempelPENDUL": os.path.join("data","Eksempel_Datasæt.xlsx"),
-    "ForsideBILLEDE": os.path.join("data", "png_overblik_stem_academy_Page_1.PNG")
+    "ForsideBILLEDE": os.path.join("data", "png_overblik_stem_academy_Page_1.png")
 }
 
 # ML Model settings
